@@ -1,8 +1,23 @@
 //Quest room control system//
 
+/*algorytm:
+Operator chooses game mode by pushing a select_mode_but, mode_leds indicate which mode is chosen
+start_but starts a game, reset_but - switches game into a reset mode.
+
+There is a few activities, which are working in a separate modes:
+-Smoke machine
+-Music
+-Led projector
+-RGB LED
+-Syrene-lamp
+-Disco-lamp
+-Timer
+-Score indicators
+
+*/
 #include <DFPlayer_Mini_Mp3.h>
 
-#define SSerialTxControl 8   //RS485 Direction control
+#define rs485_direction_pin 8   //RS485 Direction control
 
 //console buttons and leds
 #define select_mode_but 11
@@ -31,6 +46,22 @@
 #define ind2_F A13
 #define ind2_G A14
 
+//12V N-channel MOSFET pins
+#define M_1_rgb_led_1 23 //Catch_up mode - all time //Artefact mode - every 2 min for a 30 secs
+#define M_2_rgb_led_2 25 //Catch_up mode - all time //Artefact mode - every 2 min for a 30 secs
+#define M_3_syrene 27 //artefact mode - 5,4,3,2,1 min before the end of the round for a 10 secs
+#define M_4 29
+#define M_5 31
+#define M_6 33
+#define M_7 35
+#define M_8 37
+
+//220V time relay trigger pins
+#define T_1_smoke_machine 39 //all modes - every 2 min for a 5-10 secs
+#define T_2_disco_lamp 41 //all modes - every 2 min for a 10 secs
+#define T_3_exit_door_led_projector 43 //all modes - at the end of the round
+#define T_4 45
+
 // array to store indicator nuber combinations
 int num_array[10][7] = {  { 1,1,1,1,1,1,0 },    // 0
                           { 0,1,1,0,0,0,0 },    // 1
@@ -42,10 +73,6 @@ int num_array[10][7] = {  { 1,1,1,1,1,1,0 },    // 0
                           { 1,1,1,0,0,0,0 },    // 7
                           { 1,1,1,1,1,1,1 },    // 8
                           { 1,1,1,0,0,1,1 }};   // 9
-                                       
-//initiate indicators functoins
-void Num1_red_Write(int);
-void Num2_green_Write(int);
 
 bool select_mode_but_flag = false; //button flag to realize trigger "push - on, release, push - off"
 int mode = 1; // 1,2,3 - variable to store game mode parameter
@@ -101,14 +128,21 @@ bool green8_flag = false;
 bool green9_flag = false;
 bool green10_flag = false;
 
+unsigned long timer_game = 0;
+bool is_timer_active = false;
+
+//initiate indicators functoins
+void Num1_red_Write(int);
+void Num2_green_Write(int);
+
 void setup()
 {
 	Serial.begin(9600);
 	Serial1.begin(9600); //dfplayer serial
 	Serial2.begin(9600); //rs485 serial
 
-  pinMode(SSerialTxControl, OUTPUT); 
-  digitalWrite(SSerialTxControl, LOW); // переводим устройство в режим приёмника
+  pinMode(rs485_direction_pin, OUTPUT); 
+  digitalWrite(rs485_direction_pin, LOW); // переводим устройство в режим приёмника
 
   pinMode(select_mode_but, INPUT_PULLUP); 
   pinMode(start_but, INPUT_PULLUP); 
@@ -137,11 +171,34 @@ void setup()
   pinMode(ind2_F, OUTPUT);
   pinMode(ind2_G, OUTPUT);
 
+  pinMode(M_1_rgb_led_1, OUTPUT);
+  pinMode(M_2_rgb_led_2, OUTPUT);
+  pinMode(M_3, OUTPUT);
+  pinMode(M_4, OUTPUT);
+  pinMode(M_5, OUTPUT);
+  pinMode(M_6, OUTPUT);
+  pinMode(M_7, OUTPUT);
+  pinMode(M_8, OUTPUT);
+
+  pinMode(T_1_smoke_machine, OUTPUT);
+  pinMode(T_2, OUTPUT);
+  pinMode(T_3, OUTPUT);
+  pinMode(T_4, OUTPUT);
+
   mp3_stop(); // stop any track playing after controller reset
+  Serial.println("Helloword");
 }
 
 void loop()
 {
+  /*for(int i = 0; i < 10; i++)
+  {
+    Serial.println(i);
+    Num1_red_Write(i);
+    Num2_green_Write(i);
+    delay(1000);
+  }*/
+
 	choose_mode(); //select game mode after powering on
 
 	if(digitalRead(start_but) == LOW)
@@ -204,27 +261,64 @@ void choose_mode()
 		select_mode_but_flag = true;
 	}
 
-	if(digitalRead(select_mode_but == HIGH) && select_mode_but_flag == true) //if select_mode_but was relized after pushing
+	if(digitalRead(select_mode_but == HIGH) && select_mode_but_flag == true) //if select_mode_but was released after pushing
 	{
 		select_mode_but_flag = false; //turn the flag to the false state back
 	}
 }
 
-void catch_up_mode() //timer 15, smoke, audio, exit light 12v
+void catch_up_mode()
 {
+  //set an external timer to a 15 minutes mode
+  //send a start signal
+  if (is_timer_active == false)
+  {
+    timer_game = millis();
+    is_timer_active = true;
+  }
+
 	mp3_set_serial(Serial1);
   mp3_set_volume(20);
   mp3_play(1);
 
-  //set timer to 15 minutes
+  digitalWrite(M_1_rgb_led_1, HIGH); //power on
+  digitalWrite(M_2_rgb_led_2, HIGH); //power on
+
+  digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 120/5-10/---
+  digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 180/10/---
+  delay(500);
+  digitalWrite(T_1_smoke_machine, LOW);
+  digitalWrite(T_2_disco_lamp, LOW);
 
 
+  if(millis()-timer_game == 900000) //15 minutes has left
+  {
+    //send a stop signal to an external timer
+
+    digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 120/5-10/---
+    digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 180/10/---
+    digitalWrite(T_3_exit_door_led_projector, HIGH); //send a signal to trigger to start a one loop //set a p3.1 with 0/180/1
+    delay(500);
+    digitalWrite(T_3_exit_door_led_projector, LOW);
+    digitalWrite(T_1_smoke_machine, LOW);
+    digitalWrite(T_2_disco_lamp, LOW);
+
+    digitalWrite(M_1_rgb_led_1, LOW); //power off
+    digitalWrite(M_2_rgb_led_2, LOW); //power off
+  }
 }
 
-void artefact_mode() //timer 15, smoke, audio, indicators+cards, strobe, blink-lamp
+void artefact_mode()
 {
-	digitalWrite(SSerialTxControl, LOW);
+  //set an external timer to a 15 minutes mode
+  //send a start signal
+  if (is_timer_active == false)
+  {
+    timer_game = millis();
+    is_timer_active = true;
+  }
 
+	digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
 	if (Serial2.available()) 
 	{
 		string = "";
@@ -232,19 +326,118 @@ void artefact_mode() //timer 15, smoke, audio, indicators+cards, strobe, blink-l
 		rs485_recieve();
 	}
 
-  Num1_red_Write(counter_red);
+  Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
   Num2_green_Write(counter_green);
+
+  digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 120/5-10/---
+  digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 180/10/---
+  delay(500);
+  digitalWrite(T_1_smoke_machine, LOW);
+  digitalWrite(T_2_disco_lamp, LOW);
+
+
+  if(millis()-timer_game == 1500000) //25 min(1500s) has left
+  {
+    digitalWrite(M_3_syrene, HIGH);
+    if(millis()-timer_game == 1510000) //+10sec
+    {
+      digitalWrite(M_3_syrene, LOW);
+    }
+  }
+
+  if(millis()-timer_game == 1560000) //26 min(1560s) has left
+  {
+    digitalWrite(M_3_syrene, HIGH);
+    if(millis()-timer_game == 1570000) //+10sec
+    {
+      digitalWrite(M_3_syrene, LOW);
+    }
+  }
+
+  if(millis()-timer_game == 1620000) //27 min(1620s) has left
+  {
+    digitalWrite(M_3_syrene, HIGH);
+    if(millis()-timer_game == 1630000) //+10sec
+    {
+      digitalWrite(M_3_syrene, LOW);
+    }
+  }
+
+  if(millis()-timer_game == 1680000) //28 min(1680s) has left
+  {
+    digitalWrite(M_3_syrene, HIGH);
+    if(millis()-timer_game == 1690000) //+10sec
+    {
+      digitalWrite(M_3_syrene, LOW);
+    }
+  }
+
+  if(millis()-timer_game == 1740000) //29 min(1740s) has left
+  {
+    digitalWrite(M_3_syrene, HIGH);
+    if(millis()-timer_game == 1750000) //+10sec
+    {
+      digitalWrite(M_3_syrene, LOW);
+    }
+  }
+
+  if(millis()-timer_game == 1800000) //30 min(1800s) has left
+  {
+    digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 120/5-10/---
+    digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 180/10/---
+    digitalWrite(T_3_exit_door_led_projector, HIGH); //send a signal to trigger to start a one loop //set a p3.1 with 0/180/1
+    delay(500);
+    digitalWrite(T_3_exit_door_led_projector, LOW);
+    digitalWrite(T_1_smoke_machine, LOW);
+    digitalWrite(T_2_disco_lamp, LOW);
+
+    digitalWrite(M_3_syrene, HIGH);
+    if(millis()-timer_game == 1810000) //+10sec
+    {
+      digitalWrite(M_3_syrene, LOW);
+    }
+  }
 
 }
 
-void cossacks_mode() //timer 15, smoke, audio, rgb led, exit light 12v
+void cossacks_mode()
 {
-	
+  //set an external timer to a 15 minutes mode
+  //send a start signal
+  if (is_timer_active == false)
+  {
+    timer_game = millis();
+    is_timer_active = true;
+  }
+
+  mp3_set_serial(Serial1);
+  mp3_set_volume(20);
+  mp3_play(2);
+
+  digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 120/5-10/---
+  digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 180/10/---
+  delay(500);
+  digitalWrite(T_1_smoke_machine, LOW);
+  digitalWrite(T_2_disco_lamp, LOW);
+
+
+  if(millis()-timer_game == 900000) //15 minutes has left
+  {
+    //send a stop signal to an external timer
+    
+    digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 120/5-10/---
+    digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 180/10/---
+    digitalWrite(T_3_exit_door_led_projector, HIGH); //send a signal to trigger to start a one loop //set a p3.1 with 0/180/1
+    delay(500);
+    digitalWrite(T_3_exit_door_led_projector, LOW);
+    digitalWrite(T_1_smoke_machine, LOW);
+    digitalWrite(T_2_disco_lamp, LOW);
+  }
 }
 
 void rs485_recieve() 
 {              //recieve something from rs485 inerface
-  digitalWrite(SSerialTxControl, LOW);
+  digitalWrite(rs485_direction_pin, LOW);
   while (Serial2.available())
   {
     char inChar = Serial2.read();
