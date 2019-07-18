@@ -17,6 +17,12 @@ void setup() {
   Serial.begin(9600);
   RS485Serial.begin(9600); 
 
+  pinMode(SSerialTxControl, OUTPUT);
+  digitalWrite(SSerialTxControl, LOW); // переводим устройство в режим передатчика
+
+  //digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
+  //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
+
   Serial.println("Waiting for card...");
   SPI.begin();  //  инициализация SPI / Init SPI bus.
   mfrc522.PCD_Init();     // инициализация MFRC522 / Init MFRC522 card.
@@ -44,8 +50,8 @@ void loop()
   	Serial.println("Card UID: ");
   	Serial.println(uidDec); // Выводим UID метки в консоль.
 
-  	digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим приёмника
-  	RS485Serial.print(uidDec); // Выводим UID метки в консоль.
-  	RS485Serial.println("#"); // Выводим UID метки в консоль.
+  	//digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
+  	//RS485Serial.print(uidDec); // Выводим UID метки в консоль.
+  	//RS485Serial.println("#"); // Выводим UID метки в консоль.
   }
 }
