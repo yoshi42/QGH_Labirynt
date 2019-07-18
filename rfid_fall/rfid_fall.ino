@@ -2,8 +2,8 @@
 #include <MFRC522.h> // библиотека "RFID".
 #include <SoftwareSerial.h>
 
-#define SSerialRX        6  //Serial Receive pin
-#define SSerialTX        7  //Serial Transmit pin
+#define SSerialRX        7  //Serial Receive pin
+#define SSerialTX        6  //Serial Transmit pin
 #define SSerialTxControl 8   //RS485 Direction control
 
 #define SS_PIN 10
@@ -26,6 +26,10 @@ void setup() {
   Serial.println("Waiting for card...");
   SPI.begin();  //  инициализация SPI / Init SPI bus.
   mfrc522.PCD_Init();     // инициализация MFRC522 / Init MFRC522 card.
+
+  digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
+  //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
+  Serial.println("Waiting for card...");
 }
 void loop() 
 {
@@ -47,6 +51,9 @@ void loop()
   }
   if(uidDec != 0)
   {
+  	digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
+  	//RS485Serial.print(uidDec); // Выводим UID метки в консоль.
+  	//RS485Serial.println("#"); // Выводим стоповый байт.
   	Serial.println("Card UID: ");
   	Serial.println(uidDec); // Выводим UID метки в консоль.
 
