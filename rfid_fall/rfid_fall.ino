@@ -54,11 +54,9 @@ void loop()
   	digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
   	//RS485Serial.print(uidDec); // Выводим UID метки в консоль.
   	//RS485Serial.println("#"); // Выводим стоповый байт.
-  	Serial.println("Card UID: ");
-  	Serial.println(uidDec); // Выводим UID метки в консоль.
-
-  	//digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
-  	//RS485Serial.print(uidDec); // Выводим UID метки в консоль.
-  	//RS485Serial.println("#"); // Выводим UID метки в консоль.
+  	//Serial.println("Card UID: ");
+  	Serial.print(uidDec); // Выводим UID метки в консоль.
+  	Serial.println("#"); // Выводим стоповый байт.
+    delay(100);
   }
 }
