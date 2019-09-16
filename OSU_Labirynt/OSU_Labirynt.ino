@@ -26,6 +26,8 @@ There is a few activities, which are working in a separate modes:
 #define mode1_led 46
 #define mode2_led 44
 #define mode3_led 42
+#define timer_start 40
+#define timer_set_30 38
 
 //define 7-seg indicators - pins a0-a6, a8-a14
 //indicator red_left
@@ -169,6 +171,11 @@ void setup()
   digitalWrite(mode2_led, LOW);
   pinMode(mode3_led, OUTPUT); 
   digitalWrite(mode3_led, LOW);
+  
+  pinMode(timer_start, OUTPUT);
+  digitalWrite(timer_start, HIGH);
+  pinMode(timer_set_30, OUTPUT);
+  digitalWrite(timer_set_30, HIGH);
 
   pinMode(ind1_A, OUTPUT);
   pinMode(ind1_B, OUTPUT);
@@ -287,6 +294,9 @@ void loop()
     is_exit_projector = false;
     is_T4 = false;
 
+    digitalWrite(timer_start, HIGH);
+    digitalWrite(timer_set_30, HIGH);
+
     digitalWrite(M_1_rgb_led_1, LOW); //power off
     digitalWrite(M_2_rgb_led_2, LOW); //power off
     digitalWrite(M_3_syrene1, LOW); //power off
@@ -357,11 +367,6 @@ void choose_mode()
 
 
 
-
-
-
-
-
 ////////////////////////////////////////// catch_up_mode /////////////////////////////////////////////
 void catch_up_mode()
 {
@@ -369,7 +374,8 @@ void catch_up_mode()
   //send a start signal
   if (is_timer_active == false)
   {
-    Serial.println("catch_up_mode");
+    Serial.println("catch_up_mode 15min");
+    digitalWrite(timer_start, LOW);
 
     timer_game = millis();
     timer_smoke = millis();
@@ -414,9 +420,9 @@ void catch_up_mode()
 
   if((millis()-timer_projector >= 900000)) //3minutes has left
   {
-    //send a start signal to an external timer
     digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
     Serial.println("game is over");
+    digitalWrite(timer_start, HIGH);
 
     digitalWrite(M_1_rgb_led_1, LOW); //power off
     digitalWrite(M_2_rgb_led_2, LOW); //power off
@@ -447,6 +453,7 @@ void cossacks_mode()
   if (is_timer_active == false)
   {
     Serial.println("catch_up_mode");
+    digitalWrite(timer_start, LOW);
 
     timer_game = millis();
     timer_smoke = millis();
@@ -492,6 +499,7 @@ void cossacks_mode()
     digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
 
     Serial.println("game is over");
+    digitalWrite(timer_start, HIGH);
 
     digitalWrite(M_1_rgb_led_1, LOW); //power off
     digitalWrite(M_2_rgb_led_2, LOW); //power off
@@ -519,13 +527,15 @@ void cossacks_mode()
 ////////////////////////////////////////// artefact_mode /////////////////////////////////////////////
 void artefact_mode()
 {
-  //set an external timer to a 15 minutes mode
+  //set an external timer to a 30 minutes mode
   //send a start signal
   if (is_timer_active == false)
   {
     Serial.println("catch_up_mode");
     timer_game = millis();
     is_timer_active = true;
+    digitalWrite(timer_set_30, LOW);
+    digitalWrite(timer_start, LOW);
   }
 
   digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
@@ -593,6 +603,8 @@ void artefact_mode()
 
   if(millis()-timer_game == 1800000) //30 min(1800s) has left
   {
+    digitalWrite(timer_set_30, HIGH);
+    digitalWrite(timer_start, HIGH);
     digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 5/120/---
     digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 10/180/---
     digitalWrite(T_3_exit_door_led_projector, HIGH); //send a signal to trigger to start a one loop //set a p3.1 with 0/180/1
