@@ -20,8 +20,9 @@ void setup() {
   RemoteReceiver::init(0, 1, showCode); //прерывание 0 - пин 2
 
   pinMode(SSerialTxControl, OUTPUT);
-  digitalWrite(SSerialTxControl, LOW); // переводим устройство в режим передатчика
-  pinMode(3, INPUT);
+  digitalWrite(SSerialTxControl, LOW); // // переводим устройство в режим приемника, для предотвращения перегревания max385
+  pinMode(3, INPUT); // второй выход data в приемнике вешаем на пин 3 (interrupt 1) на всякий случай, 
+  //и назначаем его как вход, чтобы не мешался паразитными значениями
 
   //digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
   //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
@@ -36,7 +37,7 @@ void setup() {
 }
 void loop() 
 {
-  digitalWrite(SSerialTxControl, LOW);
+  digitalWrite(SSerialTxControl, LOW); // переводим устройство в режим приемника, для предотвращения перегревания max385
   // Поиск новой метки
   if ( ! mfrc522.PICC_IsNewCardPresent()) {
     return;
