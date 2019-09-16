@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include <MFRC522.h> // библиотека "RFID".
 #include <SoftwareSerial.h>
+#include <RemoteReceiver.h>
 
 #define SSerialRX        7  //Serial Receive pin
 #define SSerialTX        6  //Serial Transmit pin
@@ -16,9 +17,11 @@ SoftwareSerial RS485Serial(SSerialRX, SSerialTX); // RX, TX
 void setup() {
   Serial.begin(9600);
   RS485Serial.begin(9600); 
+  RemoteReceiver::init(0, 1, showCode); //прерывание 0 - пин 2
 
   pinMode(SSerialTxControl, OUTPUT);
   digitalWrite(SSerialTxControl, LOW); // переводим устройство в режим передатчика
+  pinMode(3, INPUT);
 
   //digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
   //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
@@ -59,4 +62,16 @@ void loop()
   	Serial.println("#"); // Выводим стоповый байт.
     delay(100);
   }
+}
+
+void showCode(unsigned long receivedCode, unsigned int period) 
+{	
+	//digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
+   	//Print the received code.
+    Serial.print("Code: ");
+    Serial.print(receivedCode);
+    //Serial.println("#"); // Выводим стоповый байт.
+    Serial.print(", period duration: ");
+    Serial.print(period);
+    Serial.println("us.");
 }
