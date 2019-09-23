@@ -77,16 +77,16 @@ int num_array[10][7] = {  { 1,1,1,1,1,1,0 },    // 0
                           { 1,1,1,0,0,1,1 }};   // 9
 
 bool select_mode_but_flag = false; //button flag to realize trigger "push - on, release, push - off"
-int mode = 1; // 1,2,3 - variable to store game mode parameter
+int mode = 1; // 1,2,3,4 - variable to store game mode parameter
 bool start_state = false; //was pushed start button?
 
 int counter_red = 0; //number of red cards founded
 int counter_green = 0; //number of green cards founded
 
 
-String string; //variable to store card uids
+String string; //variable to store information recieved form serial to compare card uids
 
-//Card uids
+//Artefact mode card uids for 
 String red1 = "300311836#";
 String red2 = "55922973#";
 String red3 = "2978344986#";
@@ -272,8 +272,18 @@ void loop()
 		digitalWrite(mode3_led, HIGH);
 		if(start_state == true)
 		{
-      cossacks_mode();
+      artefact_mode();
 		}
+
+  if(mode == 4)
+  {
+    digitalWrite(mode1_led, LOW);
+    digitalWrite(mode2_led, HIGH);
+    digitalWrite(mode3_led, HIGH);
+    if(start_state == true)
+    {
+      lasertag_mode();
+    }
 	}
 
 
@@ -294,6 +304,9 @@ void loop()
     is_exit_projector = false;
     is_T4 = false;
 
+    counter_red = 0; //number of red cards founded
+    counter_green = 0; //number of green cards founded
+
     digitalWrite(timer_start, HIGH);
     digitalWrite(timer_set_30, HIGH);
 
@@ -303,7 +316,6 @@ void loop()
     digitalWrite(M_4_syrene2, LOW); //power off
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
-    digitalWrite(T_3_exit_door_led_projector, LOW);
 
     timer_reset = millis();
 
@@ -351,11 +363,20 @@ void choose_mode()
 	if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 3) //if select_mode_but was pushed 3rd time
 	{
     delay(100);
-    Serial.println("mode1");
-		mode = 1;
+    Serial.println("mode4");
+		mode = 4;
     delay(100);
 		select_mode_but_flag = true;
 	}
+
+  if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 4) //if select_mode_but was pushed 3rd time
+  {
+    delay(100);
+    Serial.println("mode1");
+    mode = 1;
+    delay(100);
+    select_mode_but_flag = true;
+  }
 
 	if(digitalRead(select_mode_but) == HIGH && select_mode_but_flag == true) //if select_mode_but was released after pushing
 	{
@@ -367,7 +388,7 @@ void choose_mode()
 
 
 
-////////////////////////////////////////// catch_up_mode /////////////////////////////////////////////
+////////////////////////////////////////// #1 catch_up_mode /////////////////////////////////////////////
 void catch_up_mode()
 {
   //set an external timer to a 15 minutes mode
@@ -430,7 +451,6 @@ void catch_up_mode()
     digitalWrite(M_4_syrene2, LOW); //power off
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
-    digitalWrite(T_3_exit_door_led_projector, LOW);
 
     if(millis()-timer_projector >= 1080000)
     {
@@ -445,7 +465,7 @@ void catch_up_mode()
 
 
 
-////////////////////////////////////////// cossacks_mode /////////////////////////////////////////////
+////////////////////////////////////////// #2 cossacks_mode /////////////////////////////////////////////
 void cossacks_mode()
 {
   //set an external timer to a 15 minutes mode
@@ -495,7 +515,6 @@ void cossacks_mode()
 
   if((millis()-timer_projector >= 900000)) //15 minutes has left
   {
-    //send a start signal to an external timer
     digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
 
     Serial.println("game is over");
@@ -507,7 +526,6 @@ void cossacks_mode()
     digitalWrite(M_4_syrene2, LOW); //power off
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
-    digitalWrite(T_3_exit_door_led_projector, LOW);
 
     if(millis()-timer_projector >= 1080000) //3 minutes has left
     {
@@ -524,18 +542,23 @@ void cossacks_mode()
 
 
 
-////////////////////////////////////////// artefact_mode /////////////////////////////////////////////
+////////////////////////////////////////// #3 artefact_mode /////////////////////////////////////////////
 void artefact_mode()
 {
   //set an external timer to a 30 minutes mode
   //send a start signal
   if (is_timer_active == false)
   {
-    Serial.println("catch_up_mode");
+    Serial.println("artefact mode");
     timer_game = millis();
-    is_timer_active = true;
     digitalWrite(timer_set_30, LOW);
     digitalWrite(timer_start, LOW);
+
+    mp3_set_serial(Serial1);
+    mp3_set_volume(20);
+    mp3_play(3);
+
+    is_timer_active = true;
   }
 
 	digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
@@ -548,13 +571,6 @@ void artefact_mode()
 
   Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
   Num2_green_Write(counter_green);
-
-  digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 5/120/---
-  digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to start a loop //set a p3.1 with 10/180/---
-  delay(500);
-  digitalWrite(T_1_smoke_machine, LOW);
-  digitalWrite(T_2_disco_lamp, LOW);
-
 
   if(millis()-timer_game == 1500000) //25 min(1500s) has left
   {
@@ -605,11 +621,8 @@ void artefact_mode()
   {
     digitalWrite(timer_set_30, HIGH);
     digitalWrite(timer_start, HIGH);
-    digitalWrite(T_1_smoke_machine, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 5/120/---
-    digitalWrite(T_2_disco_lamp, HIGH); //send a signal to trigger to end a loop //set a p3.1 with 10/180/---
-    digitalWrite(T_3_exit_door_led_projector, HIGH); //send a signal to trigger to start a one loop //set a p3.1 with 0/180/1
-    delay(500);
-    digitalWrite(T_3_exit_door_led_projector, LOW);
+
+    digitalWrite(T_3_exit_door_led_projector, HIGH);
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
 
@@ -618,9 +631,109 @@ void artefact_mode()
     {
       digitalWrite(M_3_syrene1, LOW);
     }
+
+    if(millis()-timer_game == 1980000) //33 min has left
+    {
+      digitalWrite(T_3_exit_door_led_projector, LOW);
+    }
   }
 
 }
+
+
+
+
+
+
+
+
+////////////////////////////////////////// #4 lasertag_mode /////////////////////////////////////////////
+
+void lasertag_mode()
+{
+  //set an external timer to a 15 minutes mode
+  //send a start signal
+  if (is_timer_active == false)
+  {
+    Serial.println("lasertag_mode");
+    digitalWrite(timer_start, LOW);
+
+    timer_game = millis();
+    timer_smoke = millis();
+    timer_disco = millis();
+    timer_projector = millis();
+
+    mp3_set_serial(Serial1);
+    mp3_set_volume(20);
+    mp3_play(4);
+
+    is_timer_active = true;
+  }
+
+  digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
+  if (Serial2.available()) 
+  {
+    string = "";
+    delay(100);
+    rs485_recieve();
+  }
+
+  Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
+  Num2_green_Write(counter_green);
+
+  if(millis()-timer_smoke >= 120000)  //2 minutes has left
+  {
+    //send a start signal to an external timer
+    digitalWrite(T_1_smoke_machine, HIGH); //set a p.4
+    Serial.println("smoooooooke");
+
+    if(millis()-timer_smoke >= 125000)
+    {
+        digitalWrite(T_1_smoke_machine, LOW);
+        timer_smoke = millis();
+      }
+  }
+
+  if((millis()-timer_disco >= 180000)) //3minutes has left
+  {
+    //send a start signal to an external timer
+    digitalWrite(T_2_disco_lamp, HIGH); //set a p4
+    Serial.println("disco-disco");
+
+    if(millis()-timer_disco >= 190000)
+    {
+      digitalWrite(T_2_disco_lamp, LOW);
+      timer_disco = millis();
+    }
+  }
+
+  if((millis()-timer_projector >= 900000)) //15 minutes has left
+  {
+    digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
+
+    Serial.println("game is over");
+    digitalWrite(timer_start, HIGH);
+
+    digitalWrite(M_1_rgb_led_1, LOW); //power off
+    digitalWrite(M_2_rgb_led_2, LOW); //power off
+    digitalWrite(M_3_syrene1, LOW); //power off
+    digitalWrite(M_4_syrene2, LOW); //power off
+    digitalWrite(T_1_smoke_machine, LOW);
+    digitalWrite(T_2_disco_lamp, LOW);
+
+    if(millis()-timer_projector >= 1080000) //3 minutes has left
+    {
+      digitalWrite(T_3_exit_door_led_projector, LOW);
+    }
+  }
+
+}
+
+
+
+
+
+
 
 void rs485_recieve() 
 {              //recieve something from rs485 inerface
