@@ -154,9 +154,9 @@ void Num2_green_Write(int);
 
 void setup()
 {
-	Serial.begin(9600);
-	Serial1.begin(9600); //dfplayer serial
-	Serial2.begin(9600); //rs485 serial
+  Serial.begin(9600);
+  Serial1.begin(9600); //dfplayer serial
+  Serial2.begin(9600); //rs485 serial
 
   pinMode(rs485_direction_pin, OUTPUT); 
   digitalWrite(rs485_direction_pin, LOW); // переводим устройство в режим приёмника
@@ -233,37 +233,37 @@ void loop()
     delay(1000);
   }  */
  
-	choose_mode(); //select game mode after powering on
+  choose_mode(); //select game mode after powering on
 
-	if(digitalRead(start_but) == LOW)
-	{
+  if(digitalRead(start_but) == LOW)
+  {
     delay(50);
-		start_state = true;
+    start_state = true;
 
     digitalWrite(T_3_exit_door_led_projector, LOW);
-	}
+  }
 
-	if(mode == 1)
-	{
-		digitalWrite(mode1_led, HIGH); //indicates game mode
-		digitalWrite(mode2_led, LOW);
-		digitalWrite(mode3_led, LOW);
-		if(start_state == true)
-		{
-			catch_up_mode();
-		}
-	}
+  if(mode == 1)
+  {
+    digitalWrite(mode1_led, HIGH); //indicates game mode
+    digitalWrite(mode2_led, LOW);
+    digitalWrite(mode3_led, LOW);
+    if(start_state == true)
+    {
+      catch_up_mode();
+    }
+  }
 
-	if(mode == 2)
-	{
-		digitalWrite(mode1_led, LOW);
-		digitalWrite(mode2_led, HIGH);
-		digitalWrite(mode3_led, LOW);
-		if(start_state == true)
-		{
+  if(mode == 2)
+  {
+    digitalWrite(mode1_led, LOW);
+    digitalWrite(mode2_led, HIGH);
+    digitalWrite(mode3_led, LOW);
+    if(start_state == true)
+    {
       cossacks_mode();
-		}
-	}
+    }
+  }
 
 	if(mode == 3)
 	{
@@ -343,31 +343,31 @@ void loop()
 void choose_mode()
 {
   if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 1) //if select_mode_but was pushed
-	{
+  {
     delay(100);
     Serial.println("mode2");
-		mode = 2;
+    mode = 2;
     delay(100);
-		select_mode_but_flag = true;
-	}
+    select_mode_but_flag = true;
+  }
 
-	if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 2) //if select_mode_but was pushed 2nd time
-	{
+  if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 2) //if select_mode_but was pushed 2nd time
+  {
     delay(100);
     Serial.println("mode3");
-		mode = 3;
+    mode = 3;
     delay(100);
-		select_mode_but_flag = true;
-	}
+    select_mode_but_flag = true;
+  }
 
-	if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 3) //if select_mode_but was pushed 3rd time
-	{
+  if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 3) //if select_mode_but was pushed 3rd time
+  {
     delay(100);
     Serial.println("mode4");
 		mode = 4;
     delay(100);
-		select_mode_but_flag = true;
-	}
+    select_mode_but_flag = true;
+  }
 
   if(digitalRead(select_mode_but) == LOW && select_mode_but_flag == false && mode == 4) //if select_mode_but was pushed 3rd time
   {
@@ -561,13 +561,13 @@ void artefact_mode()
     is_timer_active = true;
   }
 
-	digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
-	if (Serial2.available()) 
-	{
-		string = "";
-		delay(100);
-		rs485_recieve();
-	}
+  digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
+  if (Serial2.available()) 
+  {
+    string = "";
+    delay(100);
+    rs485_recieve();
+  }
 
   Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
   Num2_green_Write(counter_green);
@@ -747,123 +747,123 @@ void rs485_recieve()
       //red cards uid check
       if (red1_flag == false && string.equals(red1))
       {
-      	red1_flag = true;
-      	counter_red +=1;
+        red1_flag = true;
+        counter_red +=1;
       }
 
       if (red2_flag == false && string.equals(red2))
       {
-      	red2_flag = true;
-      	counter_red +=1;
+        red2_flag = true;
+        counter_red +=1;
       }
 
       if (red3_flag == false && string.equals(red3))
       {
-      	red3_flag = true;
-      	counter_red +=1;
+        red3_flag = true;
+        counter_red +=1;
       }
 
       if (red4_flag == false && string.equals(red4))
       {
-      	red4_flag = true;
-      	counter_red +=1;
+        red4_flag = true;
+        counter_red +=1;
       }
 
       if (red5_flag == false && string.equals(red5))
       {
-      	red5_flag = true;
-      	counter_red +=1;
+        red5_flag = true;
+        counter_red +=1;
       }
 
       if (red6_flag == false && string.equals(red6))
       {
-      	red6_flag = true;
-      	counter_red +=1;
+        red6_flag = true;
+        counter_red +=1;
       }
 
       if (red7_flag == false && string.equals(red7))
       {
-      	red7_flag = true;
-      	counter_red +=1;
+        red7_flag = true;
+        counter_red +=1;
       }
 
       if (red8_flag == false && string.equals(red8))
       {
-      	red8_flag = true;
-      	counter_red +=1;
+        red8_flag = true;
+        counter_red +=1;
       }
 
       if (red9_flag == false && string.equals(red9))
       {
-      	red9_flag = true;
-      	counter_red +=1;
+        red9_flag = true;
+        counter_red +=1;
       }
 
       if (red10_flag == false && string.equals(red10))
       {
-      	red10_flag = true;
-      	counter_red +=1;
+        red10_flag = true;
+        counter_red +=1;
       }
 
       //green cards uid check
       if (green1_flag == false && string.equals(green1))
       {
-      	green1_flag = true;
-      	counter_green +=1;
+        green1_flag = true;
+        counter_green +=1;
       }
 
       if (green2_flag == false && string.equals(green2))
       {
-      	green2_flag = true;
-      	counter_green +=1;
+        green2_flag = true;
+        counter_green +=1;
       }
 
       if (green3_flag == false && string.equals(green3))
       {
-      	green3_flag = true;
-      	counter_green +=1;
+        green3_flag = true;
+        counter_green +=1;
       }
 
       if (green4_flag == false && string.equals(green4))
       {
-      	green4_flag = true;
-      	counter_green +=1;
+        green4_flag = true;
+        counter_green +=1;
       }
 
       if (green5_flag == false && string.equals(green5))
       {
-      	green5_flag = true;
-      	counter_green +=1;
+        green5_flag = true;
+        counter_green +=1;
       }
 
       if (green6_flag == false && string.equals(green6))
       {
-      	green6_flag = true;
-      	counter_green +=1;
+        green6_flag = true;
+        counter_green +=1;
       }
 
       if (green7_flag == false && string.equals(green7))
       {
-      	green7_flag = true;
-      	counter_green +=1;
+        green7_flag = true;
+        counter_green +=1;
       }
 
       if (green8_flag == false && string.equals(green8))
       {
-      	green8_flag = true;
-      	counter_green +=1;
+        green8_flag = true;
+        counter_green +=1;
       }
 
       if (green9_flag == false && string.equals(green9))
       {
-      	green9_flag = true;
-      	counter_green +=1;
+        green9_flag = true;
+        counter_green +=1;
       }
 
       if (green10_flag == false && string.equals(green10))
       {
-      	green10_flag = true;
-      	counter_green +=1;
+        green10_flag = true;
+        counter_green +=1;
       }
 
     string = "";
