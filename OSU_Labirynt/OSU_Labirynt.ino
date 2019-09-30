@@ -65,7 +65,7 @@ There is a few activities, which are working in a separate modes:
 #define T_4 5
 
 // array to store indicator nuber combinations
-int num_array[10][7] = {  { 1,1,1,1,1,1,0 },    // 0
+int num_array[11][7] = {  { 1,1,1,1,1,1,0 },    // 0
                           { 0,1,1,0,0,0,0 },    // 1
                           { 1,1,0,1,1,0,1 },    // 2
                           { 1,1,1,1,0,0,1 },    // 3
@@ -74,7 +74,8 @@ int num_array[10][7] = {  { 1,1,1,1,1,1,0 },    // 0
                           { 1,0,1,1,1,1,1 },    // 6
                           { 1,1,1,0,0,0,0 },    // 7
                           { 1,1,1,1,1,1,1 },    // 8
-                          { 1,1,1,0,0,1,1 }};   // 9
+                          { 1,1,1,0,0,1,1 },    // 9
+                          { 0,0,0,0,0,0,0 }};   // empty
 
 bool select_mode_but_flag = false; //button flag to realize trigger "push - on, release, push - off"
 int mode = 1; // 1,2,3,4 - variable to store game mode parameter
@@ -224,15 +225,6 @@ void setup()
 
 void loop()
 {
-  /*
-  for(int i = 0; i < 10; i++)
-  {
-    Serial.println(i);
-    Num1_red_Write(i);
-    Num2_green_Write(i);
-    delay(1000);
-  }  */
- 
   choose_mode(); //select game mode after powering on
 
   if(digitalRead(start_but) == LOW)
@@ -274,6 +266,7 @@ void loop()
 		{
       artefact_mode();
 		}
+  }
 
   if(mode == 4)
   {
@@ -316,6 +309,9 @@ void loop()
     digitalWrite(M_4_syrene2, LOW); //power off
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
+
+    Num1_red_Write(10); //write empty values to turn off the indicator
+    Num2_green_Write(10);
 
     timer_reset = millis();
 
@@ -653,6 +649,9 @@ void lasertag_mode()
 {
   //set an external timer to a 15 minutes mode
   //send a start signal
+
+  ind_test();
+
   if (is_timer_active == false)
   {
     Serial.println("lasertag_mode");
@@ -669,6 +668,8 @@ void lasertag_mode()
 
     is_timer_active = true;
   }
+
+  rs485_test();
 
   digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
   if (Serial2.available()) 
@@ -730,7 +731,33 @@ void lasertag_mode()
 }
 
 
+void ind_test()
+{
+  for(int i = 0; i < 10; i++)
+  {
+    Serial.println(i);
+    Num1_red_Write(i);
+    Num2_green_Write(i);
+    delay(500);
+  }
+}
 
+
+void rs485_test() 
+{              //recieve something from rs485 inerface
+  digitalWrite(rs485_direction_pin, LOW);
+  while (Serial2.available())
+  {
+    char inChar = Serial2.read();
+    string += inChar;
+    if (inChar == '#')
+    {
+    
+    Serial.println("string");
+    string = "";
+    }
+  }
+}
 
 
 
