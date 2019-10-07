@@ -221,6 +221,12 @@ void setup()
   delay(100);
 
   Serial.println("Helloword");
+
+  digitalWrite(rs485_direction_pin, HIGH); // переводим устройство в режим передатчика
+  //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
+  Serial2.println("RS485 Helloword...");
+  delay(50);
+  digitalWrite(rs485_direction_pin, LOW); // переводим устройство в режим передатчика
 }
 
 void loop()
@@ -318,6 +324,29 @@ void loop()
     digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
     Serial.println("Exit_projector on");
     reset_state = true;
+
+    //reset all flags for artefact cards
+    red1_flag = false;
+    red2_flag = false;
+    red3_flag = false;
+    red4_flag = false;
+    red5_flag = false;
+    red6_flag = false;
+    red7_flag = false;
+    red8_flag = false;
+    red9_flag = false;
+    red10_flag = false;
+
+    green1_flag = false;
+    green2_flag = false;
+    green3_flag = false;
+    green4_flag = false;
+    green5_flag = false;
+    green6_flag = false;
+    green7_flag = false;
+    green8_flag = false;
+    green9_flag = false;
+    green10_flag = false;
   }
 
   if((millis()-timer_reset >= 180000)) //3minutes has left
@@ -325,7 +354,7 @@ void loop()
       //send a start signal to an external timer
       digitalWrite(T_3_exit_door_led_projector, LOW); //set a p4
 
-      Serial.println("Exit_projector off");
+      //Serial.println("Exit_projector off");
     }
 
   if(digitalRead(reset_but) == HIGH)
@@ -650,7 +679,7 @@ void lasertag_mode()
   //set an external timer to a 15 minutes mode
   //send a start signal
 
-  ind_test();
+  //ind_test();
 
   if (is_timer_active == false)
   {
@@ -752,14 +781,12 @@ void rs485_test()
     string += inChar;
     if (inChar == '#')
     {
-    
-    Serial.println("string");
-    string = "";
+      Serial.println(string);
+      string = "";
     }
+
   }
 }
-
-
 
 
 void rs485_recieve() 

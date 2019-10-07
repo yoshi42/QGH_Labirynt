@@ -33,7 +33,9 @@ void setup() {
 
   digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
   //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
-  Serial.println("Waiting for card...");
+  Serial.println("RS485 Waiting for card...");
+  delay(50);
+
 }
 void loop() 
 {
