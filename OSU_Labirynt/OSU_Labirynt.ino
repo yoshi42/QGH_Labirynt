@@ -65,7 +65,7 @@ There is a few activities, which are working in a separate modes:
 #define T_4 5
 
 // array to store indicator nuber combinations
-int num_array[11][7] = {  { 1,1,1,1,1,1,0 },    // 0
+int num_array[12][7] = {  { 1,1,1,1,1,1,0 },    // 0
                           { 0,1,1,0,0,0,0 },    // 1
                           { 1,1,0,1,1,0,1 },    // 2
                           { 1,1,1,1,0,0,1 },    // 3
@@ -75,6 +75,7 @@ int num_array[11][7] = {  { 1,1,1,1,1,1,0 },    // 0
                           { 1,1,1,0,0,0,0 },    // 7
                           { 1,1,1,1,1,1,1 },    // 8
                           { 1,1,1,0,0,1,1 },    // 9
+                          { 0,1,1,1,1,1,0 },    // Victory
                           { 0,0,0,0,0,0,0 }};   // empty
 
 bool select_mode_but_flag = false; //button flag to realize trigger "push - on, release, push - off"
@@ -83,6 +84,9 @@ bool start_state = false; //was pushed start button?
 
 int counter_red = 0; //number of red cards founded
 int counter_green = 0; //number of green cards founded
+
+int counter_red_gun = 0; //number of red cards founded
+int counter_blue_gun = 0; //number of green cards founded
 
 
 String string; //variable to store information recieved form serial to compare card uids
@@ -112,6 +116,18 @@ String green10 = "2202829595#";
 
 String adm_key = "923640870#"; //admin key
 
+String red_gun1 = "01#";
+String red_gun2 = "02#";
+String red_gun3 = "03#";
+String red_gun4 = "04#";
+String red_gun5 = "05#";
+
+String blue_gun1 = "1#";
+String blue_gun2 = "2#";
+String blue_gun3 = "3#";
+String blue_gun4 = "4#";
+String blue_gun5 = "5#";
+
 //flags to read card uid just once per game
 bool red1_flag = false;
 bool red2_flag = false;
@@ -134,6 +150,19 @@ bool green7_flag = false;
 bool green8_flag = false;
 bool green9_flag = false;
 bool green10_flag = false;
+
+//gun flags
+bool red1_gun_flag = false;
+bool red2_gun_flag = false;
+bool red3_gun_flag = false;
+bool red4_gun_flag = false;
+bool red5_gun_flag = false;
+
+bool blue1_gun_flag = false;
+bool blue2_gun_flag = false;
+bool blue3_gun_flag = false;
+bool blue4_gun_flag = false;
+bool blue5_gun_flag = false;
 
 unsigned long timer_game = 0;
 unsigned long timer_smoke = 0;
@@ -226,7 +255,17 @@ void setup()
   //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
   Serial2.println("RS485 Helloword...");
   delay(50);
-  digitalWrite(rs485_direction_pin, LOW); // переводим устройство в режим передатчика
+  digitalWrite(rs485_direction_pin, LOW); // переводим устройство в режим приёмника
+}
+
+void loop_test()
+{
+  if (Serial2.available()) 
+  {
+    string = "";
+    delay(100);
+    rs485_test();
+  }
 }
 
 void loop()
@@ -306,6 +345,9 @@ void loop()
     counter_red = 0; //number of red cards founded
     counter_green = 0; //number of green cards founded
 
+    counter_red_gun = 0;
+    counter_blue_gun = 0;
+
     digitalWrite(timer_start, HIGH);
     digitalWrite(timer_set_30, HIGH);
 
@@ -316,8 +358,8 @@ void loop()
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
 
-    Num1_red_Write(10); //write empty values to turn off the indicator
-    Num2_green_Write(10);
+    Num1_red_Write(11); //write empty values to turn off the indicator
+    Num2_green_Write(11);
 
     timer_reset = millis();
 
@@ -347,6 +389,19 @@ void loop()
     green8_flag = false;
     green9_flag = false;
     green10_flag = false;
+
+    red1_gun_flag = false;
+    red2_gun_flag = false;
+    red3_gun_flag = false;
+    red4_gun_flag = false;
+    red5_gun_flag = false;
+
+    blue1_gun_flag = false;
+    blue2_gun_flag = false;
+    blue3_gun_flag = false;
+    blue4_gun_flag = false;
+    blue5_gun_flag = false;
+
   }
 
   if((millis()-timer_reset >= 180000)) //3minutes has left
@@ -464,7 +519,7 @@ void catch_up_mode()
     }
   }
 
-  if((millis()-timer_projector >= 900000)) //3minutes has left
+  if((millis()-timer_projector >= 900000)) //15 minutes has left
   {
     digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
     Serial.println("game is over");
@@ -477,16 +532,13 @@ void catch_up_mode()
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
 
-    if(millis()-timer_projector >= 1080000)
+    if(millis()-timer_projector >= 1080000) //18 minutes has left
     {
       digitalWrite(T_3_exit_door_led_projector, LOW);
     }
   }
 
 }
-
-
-
 
 
 
@@ -552,7 +604,7 @@ void cossacks_mode()
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
 
-    if(millis()-timer_projector >= 1080000) //3 minutes has left
+    if(millis()-timer_projector >= 1080000) //18 minutes has left
     {
       digitalWrite(T_3_exit_door_led_projector, LOW);
     }
@@ -577,6 +629,7 @@ void artefact_mode()
     Serial.println("artefact mode");
     timer_game = millis();
     digitalWrite(timer_set_30, LOW);
+    delay(100);
     digitalWrite(timer_start, LOW);
 
     mp3_set_serial(Serial1);
@@ -591,7 +644,7 @@ void artefact_mode()
   {
     string = "";
     delay(100);
-    rs485_recieve();
+    rs485_recieve_artefact_mode();
   }
 
   Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
@@ -647,6 +700,8 @@ void artefact_mode()
     digitalWrite(timer_set_30, HIGH);
     digitalWrite(timer_start, HIGH);
 
+    mp3_play(13);
+
     digitalWrite(T_3_exit_door_led_projector, HIGH);
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
@@ -661,6 +716,29 @@ void artefact_mode()
     {
       digitalWrite(T_3_exit_door_led_projector, LOW);
     }
+  }
+
+  if(counter_red == 10 || counter_green == 10) //victory!!!
+  {
+    is_disco = false;
+    is_exit_projector = false;
+    is_T4 = false;
+
+    if(is_game_over == false)
+    {
+      mp3_play(5);
+      delay(100);
+      digitalWrite(timer_start, HIGH);
+      digitalWrite(timer_set_30, HIGH);
+      is_game_over = true;
+    }
+
+    digitalWrite(M_1_rgb_led_1, LOW); //power off
+    digitalWrite(M_2_rgb_led_2, LOW); //power off
+    digitalWrite(M_3_syrene1, LOW); //power off
+    digitalWrite(M_4_syrene2, LOW); //power off
+    digitalWrite(T_1_smoke_machine, LOW);
+    digitalWrite(T_2_disco_lamp, LOW);
   }
 
 }
@@ -698,14 +776,13 @@ void lasertag_mode()
     is_timer_active = true;
   }
 
-  rs485_test();
 
   digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
   if (Serial2.available()) 
   {
     string = "";
     delay(100);
-    rs485_recieve();
+    rs485_recieve_lasertag_mode();
   }
 
   Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
@@ -743,6 +820,7 @@ void lasertag_mode()
 
     Serial.println("game is over");
     digitalWrite(timer_start, HIGH);
+    mp3_play(13);
 
     digitalWrite(M_1_rgb_led_1, LOW); //power off
     digitalWrite(M_2_rgb_led_2, LOW); //power off
@@ -775,6 +853,7 @@ void ind_test()
 void rs485_test() 
 {              //recieve something from rs485 inerface
   digitalWrite(rs485_direction_pin, LOW);
+  delay(50);
   while (Serial2.available())
   {
     char inChar = Serial2.read();
@@ -782,14 +861,17 @@ void rs485_test()
     if (inChar == '#')
     {
       Serial.println(string);
+      /*if(string.equals(red_gun1))
+      {
+        Serial.println("equals 01#");
+      }*/
       string = "";
     }
-
   }
 }
 
 
-void rs485_recieve() 
+void rs485_recieve_artefact_mode() 
 {              //recieve something from rs485 inerface
   digitalWrite(rs485_direction_pin, LOW);
   while (Serial2.available())
@@ -803,60 +885,70 @@ void rs485_recieve()
       {
         red1_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red2_flag == false && string.equals(red2))
       {
         red2_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red3_flag == false && string.equals(red3))
       {
         red3_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red4_flag == false && string.equals(red4))
       {
         red4_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red5_flag == false && string.equals(red5))
       {
         red5_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red6_flag == false && string.equals(red6))
       {
         red6_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red7_flag == false && string.equals(red7))
       {
         red7_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red8_flag == false && string.equals(red8))
       {
         red8_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red9_flag == false && string.equals(red9))
       {
         red9_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       if (red10_flag == false && string.equals(red10))
       {
         red10_flag = true;
         counter_red +=1;
+        mp3_play(11);
       }
 
       //green cards uid check
@@ -864,60 +956,159 @@ void rs485_recieve()
       {
         green1_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green2_flag == false && string.equals(green2))
       {
         green2_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green3_flag == false && string.equals(green3))
       {
         green3_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green4_flag == false && string.equals(green4))
       {
         green4_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green5_flag == false && string.equals(green5))
       {
         green5_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green6_flag == false && string.equals(green6))
       {
         green6_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green7_flag == false && string.equals(green7))
       {
         green7_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green8_flag == false && string.equals(green8))
       {
         green8_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green9_flag == false && string.equals(green9))
       {
         green9_flag = true;
         counter_green +=1;
+        mp3_play(12);
       }
 
       if (green10_flag == false && string.equals(green10))
       {
         green10_flag = true;
         counter_green +=1;
+        mp3_play(12);
+      }
+
+    string = "";
+    }
+  }
+}
+
+void rs485_recieve_lasertag_mode() 
+{ 
+//recieve something from rs485 inerface
+  digitalWrite(rs485_direction_pin, LOW);
+  while (Serial2.available())
+  {
+    char inChar = Serial2.read();
+    string += inChar;
+    if (inChar == '#')
+    {
+      //red gun's codes
+      if (red1_gun_flag == false && string.equals(red_gun1))
+      {
+        red1_gun_flag = true;
+        counter_red_gun +=1;
+        mp3_play(11);
+      }
+
+      if (red2_gun_flag == false && string.equals(red_gun2))
+      {
+        red2_gun_flag = true;
+        counter_red_gun +=1;
+        mp3_play(11);
+      }
+
+      if (red3_gun_flag == false && string.equals(red_gun3))
+      {
+        red3_gun_flag = true;
+        counter_red_gun +=1;
+        mp3_play(11);
+      }
+
+      if (red4_gun_flag == false && string.equals(red_gun4))
+      {
+        red4_gun_flag = true;
+        counter_red_gun +=1;
+        mp3_play(11);
+      }
+
+      if (red5_gun_flag == false && string.equals(red_gun5))
+      {
+        red5_gun_flag = true;
+        counter_red_gun +=1;
+        mp3_play(11);
+      }
+
+      
+
+      //blue gun's codes
+      if (blue1_gun_flag == false && string.equals(blue_gun1))
+      {
+        blue1_gun_flag = true;
+        counter_blue_gun +=1;
+        mp3_play(12);
+      }
+
+      if (blue2_gun_flag == false && string.equals(blue_gun2))
+      {
+        blue2_gun_flag = true;
+        counter_blue_gun +=1;
+        mp3_play(12);
+      }
+
+      if (blue3_gun_flag == false && string.equals(blue_gun3))
+      {
+        blue3_gun_flag = true;
+        counter_blue_gun +=1;
+        mp3_play(12);
+      }
+
+      if (blue4_gun_flag == false && string.equals(blue_gun4))
+      {
+        blue4_gun_flag = true;
+        counter_blue_gun +=1;
+        mp3_play(12);
+      }
+
+      if (blue5_gun_flag == false && string.equals(blue_gun5))
+      {
+        blue5_gun_flag = true;
+        counter_blue_gun +=1;
+        mp3_play(12);
       }
 
     string = "";
