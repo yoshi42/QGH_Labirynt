@@ -12,6 +12,9 @@
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 unsigned long uidDec, uidDecTemp;  // для храниения номера метки в десятичном формате
 
+unsigned long 433mhz_recieved = 0;
+unsigned long 433mhz_recieved_prev = 0;
+
 SoftwareSerial RS485Serial(SSerialRX, SSerialTX); // RX, TX
 
 void setup() {
@@ -71,10 +74,16 @@ void showCode(unsigned long receivedCode, unsigned int period)
 {	
 	//digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
    	//Print the received code.
-    Serial.print("Code: ");
-    Serial.print(receivedCode);
-    //Serial.println("#"); // Выводим стоповый байт.
-    Serial.print(", period duration: ");
-    Serial.print(period);
-    Serial.println("us.");
+    //Serial.print("Code: ");
+    433mhz_recieved = receivedCode;
+    if(433mhz_recieved != 433mhz_recieved_prev)
+    {
+      Serial.print(receivedCode);
+      Serial.println("#"); // Выводим стоповый байт.
+      //Serial.print(", period duration: ");
+      //Serial.print(period);
+      //Serial.println("us.");
+      433mhz_recieved_prev = 433mhz_recieved;
+    }
+
 }

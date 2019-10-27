@@ -345,6 +345,9 @@ void loop()
     counter_red = 0; //number of red cards founded
     counter_green = 0; //number of green cards founded
 
+    counter_red_prev = 0; //number of red cards founded
+    counter_green_prev = 0; //number of green cards founded
+
     counter_red_gun = 0;
     counter_blue_gun = 0;
 
@@ -749,33 +752,23 @@ void artefact_mode()
 
 
 
-
-////////////////////////////////////////// #4 lasertag_mode /////////////////////////////////////////////
-
+////////////////////////////////////////// #3 lasertag_mode ///////////////////////////////////////////////////
 void lasertag_mode()
 {
-  //set an external timer to a 15 minutes mode
+  //set an external timer to a 30 minutes mode
   //send a start signal
-
-  //ind_test();
-
   if (is_timer_active == false)
   {
-    Serial.println("lasertag_mode");
-    digitalWrite(timer_start, LOW);
-
+    Serial.println("lasertag_mode mode");
     timer_game = millis();
-    timer_smoke = millis();
-    timer_disco = millis();
-    timer_projector = millis();
+    digitalWrite(timer_start, LOW);
 
     mp3_set_serial(Serial1);
     mp3_set_volume(20);
-    mp3_play(4);
+    mp3_play(3);
 
     is_timer_active = true;
   }
-
 
   digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
   if (Serial2.available()) 
@@ -785,42 +778,62 @@ void lasertag_mode()
     rs485_recieve_lasertag_mode();
   }
 
-  Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
-  Num2_green_Write(counter_green);
+  //change a score on a display every 10 poins! and play a song every time
+  counter_red = counter_red_gun/10;
+  counter_green = counter_blue_gun/10;
 
-  if(millis()-timer_smoke >= 120000)  //2 minutes has left
+  if(counter_red != counter_red_prev) //when counter red was changed - play a sound
   {
-    //send a start signal to an external timer
-    digitalWrite(T_1_smoke_machine, HIGH); //set a p.4
-    Serial.println("smoooooooke");
-
-    if(millis()-timer_smoke >= 125000)
-    {
-        digitalWrite(T_1_smoke_machine, LOW);
-        timer_smoke = millis();
-      }
+    mp3_play(11);
+    counter_red_prev = counter_red;
   }
 
-  if((millis()-timer_disco >= 180000)) //3minutes has left
+  if(counter_green != counter_green_prev) //when counter red was changed - play a sound
   {
-    //send a start signal to an external timer
-    digitalWrite(T_2_disco_lamp, HIGH); //set a p4
-    Serial.println("disco-disco");
+    mp3_play(12);
+    counter_green_prev = counter_green;
+  }
 
-    if(millis()-timer_disco >= 190000)
+  Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value - refresh display!
+  Num2_green_Write(counter_green);
+
+
+  if(millis()-timer_game == 900000) //15 min(900s) has left
+  {
+    digitalWrite(timer_set_30, HIGH);
+    digitalWrite(timer_start, HIGH);
+
+    mp3_play(13);
+
+    digitalWrite(T_3_exit_door_led_projector, HIGH);
+    digitalWrite(T_1_smoke_machine, LOW);
+    digitalWrite(T_2_disco_lamp, LOW);
+
+    digitalWrite(M_3_syrene1, HIGH);
+    if(millis()-timer_game == 910000) //+10sec
     {
-      digitalWrite(T_2_disco_lamp, LOW);
-      timer_disco = millis();
+      digitalWrite(M_3_syrene1, LOW);
+    }
+
+    if(millis()-timer_game == 1080000) //18 min has left
+    {
+      digitalWrite(T_3_exit_door_led_projector, LOW);
     }
   }
 
-  if((millis()-timer_projector >= 900000)) //15 minutes has left
+  if(counter_red == 10 || counter_green == 10) //victory!!!
   {
-    digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
+    is_disco = false;
+    is_exit_projector = false;
+    is_T4 = false;
 
-    Serial.println("game is over");
-    digitalWrite(timer_start, HIGH);
-    mp3_play(13);
+    if(is_game_over == false)
+    {
+      mp3_play(5);
+      delay(100);
+      digitalWrite(timer_start, HIGH);
+      is_game_over = true;
+    }
 
     digitalWrite(M_1_rgb_led_1, LOW); //power off
     digitalWrite(M_2_rgb_led_2, LOW); //power off
@@ -828,11 +841,6 @@ void lasertag_mode()
     digitalWrite(M_4_syrene2, LOW); //power off
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
-
-    if(millis()-timer_projector >= 1080000) //3 minutes has left
-    {
-      digitalWrite(T_3_exit_door_led_projector, LOW);
-    }
   }
 
 }
@@ -1038,77 +1046,55 @@ void rs485_recieve_lasertag_mode()
     if (inChar == '#')
     {
       //red gun's codes
-      if (red1_gun_flag == false && string.equals(red_gun1))
+      if (string.equals(red_gun1))
       {
-        red1_gun_flag = true;
         counter_red_gun +=1;
-        mp3_play(11);
       }
 
-      if (red2_gun_flag == false && string.equals(red_gun2))
+      if (string.equals(red_gun2))
       {
-        red2_gun_flag = true;
         counter_red_gun +=1;
-        mp3_play(11);
       }
 
-      if (red3_gun_flag == false && string.equals(red_gun3))
+      if (string.equals(red_gun3))
       {
-        red3_gun_flag = true;
         counter_red_gun +=1;
-        mp3_play(11);
       }
 
-      if (red4_gun_flag == false && string.equals(red_gun4))
+      if (string.equals(red_gun4))
       {
-        red4_gun_flag = true;
         counter_red_gun +=1;
-        mp3_play(11);
       }
 
-      if (red5_gun_flag == false && string.equals(red_gun5))
+      if (string.equals(red_gun5))
       {
-        red5_gun_flag = true;
         counter_red_gun +=1;
-        mp3_play(11);
       }
-
-      
 
       //blue gun's codes
-      if (blue1_gun_flag == false && string.equals(blue_gun1))
+      if (string.equals(blue_gun1))
       {
-        blue1_gun_flag = true;
         counter_blue_gun +=1;
-        mp3_play(12);
       }
 
-      if (blue2_gun_flag == false && string.equals(blue_gun2))
+      if (string.equals(blue_gun2))
       {
-        blue2_gun_flag = true;
         counter_blue_gun +=1;
-        mp3_play(12);
       }
 
-      if (blue3_gun_flag == false && string.equals(blue_gun3))
+      if (string.equals(blue_gun3))
       {
-        blue3_gun_flag = true;
         counter_blue_gun +=1;
-        mp3_play(12);
       }
 
-      if (blue4_gun_flag == false && string.equals(blue_gun4))
+      if (string.equals(blue_gun4))
       {
-        blue4_gun_flag = true;
         counter_blue_gun +=1;
-        mp3_play(12);
       }
 
-      if (blue5_gun_flag == false && string.equals(blue_gun5))
+      if (string.equals(blue_gun5))
       {
-        blue5_gun_flag = true;
         counter_blue_gun +=1;
-        mp3_play(12);
       }
 
     string = "";
