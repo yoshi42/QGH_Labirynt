@@ -84,9 +84,12 @@ bool start_state = false; //was pushed start button?
 
 int counter_red = 0; //number of red cards founded
 int counter_green = 0; //number of green cards founded
+int counter_red_prev = 0;
+int counter_green_prev = 0;
 
 int counter_red_gun = 0; //number of red cards founded
 int counter_blue_gun = 0; //number of green cards founded
+int counter_gun_divider = 1; //variable to divide points to fit in 1 digit score
 
 
 String string; //variable to store information recieved form serial to compare card uids
@@ -116,17 +119,24 @@ String green10 = "2202829595#";
 
 String adm_key = "923640870#"; //admin key
 
-String red_gun1 = "01#";
-String red_gun2 = "02#";
+
+//it is needed to invert codes: red gun codes to green and green to red
+//red team codes gives point to green and conversely
+
+String red_gun1 = "525609#";
+String red_gun2 = "465751#";
 String red_gun3 = "03#";
 String red_gun4 = "04#";
 String red_gun5 = "05#";
 
-String blue_gun1 = "1#";
-String blue_gun2 = "2#";
+String blue_gun1 = "529822#";
+String blue_gun2 = "487540#";
 String blue_gun3 = "3#";
 String blue_gun4 = "4#";
 String blue_gun5 = "5#";
+
+String recieved_RF = "0";
+String recieved_RF_prev = "1";
 
 //flags to read card uid just once per game
 bool red1_flag = false;
@@ -250,7 +260,6 @@ void setup()
   delay(100);
 
   Serial.println("Helloword");
-
   digitalWrite(rs485_direction_pin, HIGH); // переводим устройство в режим передатчика
   //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
   Serial2.println("RS485 Helloword...");
@@ -721,8 +730,18 @@ void artefact_mode()
     }
   }
 
-  if(counter_red == 10 || counter_green == 10) //victory!!!
+  if(counter_red == 7 || counter_green == 7) //victory!!!
   {
+    if(counter_red == 7)
+    {
+      counter_red = 10; //to show V-letter
+    }
+
+    if(counter_green == 7)
+    {
+      counter_green = 10; //to show V-letter
+    }
+
     is_disco = false;
     is_exit_projector = false;
     is_T4 = false;
@@ -752,14 +771,14 @@ void artefact_mode()
 
 
 
-////////////////////////////////////////// #3 lasertag_mode ///////////////////////////////////////////////////
+////////////////////////////////////////// #4 lasertag_mode ///////////////////////////////////////////////////
 void lasertag_mode()
 {
-  //set an external timer to a 30 minutes mode
+  //set an external timer to a 15 minutes mode
   //send a start signal
   if (is_timer_active == false)
   {
-    Serial.println("lasertag_mode mode");
+    Serial.println("lasertag mode");
     timer_game = millis();
     digitalWrite(timer_start, LOW);
 
@@ -776,11 +795,12 @@ void lasertag_mode()
     string = "";
     delay(100);
     rs485_recieve_lasertag_mode();
+    //rs485_test();
   }
 
-  //change a score on a display every 10 poins! and play a song every time
-  counter_red = counter_red_gun/10;
-  counter_green = counter_blue_gun/10;
+  //change a score on a display every X poins! and play a bell sound every time
+  counter_red = counter_red_gun/counter_gun_divider;
+  counter_green = counter_blue_gun/counter_gun_divider;
 
   if(counter_red != counter_red_prev) //when counter red was changed - play a sound
   {
@@ -823,6 +843,7 @@ void lasertag_mode()
 
   if(counter_red == 10 || counter_green == 10) //victory!!!
   {
+
     is_disco = false;
     is_exit_projector = false;
     is_T4 = false;
@@ -878,7 +899,6 @@ void rs485_test()
   }
 }
 
-
 void rs485_recieve_artefact_mode() 
 {              //recieve something from rs485 inerface
   digitalWrite(rs485_direction_pin, LOW);
@@ -889,6 +909,7 @@ void rs485_recieve_artefact_mode()
     if (inChar == '#')
     {
       //red cards uid check
+      Serial.println(string);
       if (red1_flag == false && string.equals(red1))
       {
         red1_flag = true;
@@ -1045,59 +1066,67 @@ void rs485_recieve_lasertag_mode()
     string += inChar;
     if (inChar == '#')
     {
-      //red gun's codes
-      if (string.equals(red_gun1))
-      {
-        counter_red_gun +=1;
-      }
+      recieved_RF = string;
 
-      if (string.equals(red_gun2))
-      {
-        counter_red_gun +=1;
-      }
+      //Serial.println(recieved_RF.equals(recieved_RF_prev));
 
-      if (string.equals(red_gun3))
+      if(!(recieved_RF.equals(recieved_RF_prev))) // condition to pass the only one batch of code!
       {
-        counter_red_gun +=1;
-      }
+        Serial.println(string);
+        //red gun's codes
+        if (string.equals(red_gun1))
+        {
+          counter_red_gun +=1;
+        }
 
-      if (string.equals(red_gun4))
-      {
-        counter_red_gun +=1;
-      }
+        if (string.equals(red_gun2))
+        {
+          counter_red_gun +=1;
+        }
 
-      if (string.equals(red_gun5))
-      {
-        counter_red_gun +=1;
-      }
+        if (string.equals(red_gun3))
+        {
+          counter_red_gun +=1;
+        }
 
-      //blue gun's codes
-      if (string.equals(blue_gun1))
-      {
-        counter_blue_gun +=1;
-      }
+        if (string.equals(red_gun4))
+        {
+          counter_red_gun +=1;
+        }
 
-      if (string.equals(blue_gun2))
-      {
-        counter_blue_gun +=1;
-      }
+        if (string.equals(red_gun5))
+        {
+          counter_red_gun +=1;
+        }
 
-      if (string.equals(blue_gun3))
-      {
-        counter_blue_gun +=1;
-      }
+        //blue gun's codes
+        if (string.equals(blue_gun1))
+        {
+          counter_blue_gun +=1;
+        }
 
-      if (string.equals(blue_gun4))
-      {
-        counter_blue_gun +=1;
-      }
+        if (string.equals(blue_gun2))
+        {
+          counter_blue_gun +=1;
+        }
 
-      if (string.equals(blue_gun5))
-      {
-        counter_blue_gun +=1;
-      }
+        if (string.equals(blue_gun3))
+        {
+          counter_blue_gun +=1;
+        }
 
-    string = "";
+        if (string.equals(blue_gun4))
+        {
+          counter_blue_gun +=1;
+        }
+
+        if (string.equals(blue_gun5))
+        {
+          counter_blue_gun +=1;
+        }
+        recieved_RF_prev = recieved_RF;
+        string = "";
+      }
     }
   }
 }
