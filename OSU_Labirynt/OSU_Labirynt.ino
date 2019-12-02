@@ -124,14 +124,14 @@ String adm_key = "923640870#"; //admin key
 //red team codes gives point to green and conversely
 
 String red_gun1 = "525609#";
-String red_gun2 = "465751#";
+String red_gun2 = "487540#";
 String red_gun3 = "03#";
 String red_gun4 = "04#";
 String red_gun5 = "05#";
 
 String blue_gun1 = "529822#";
-String blue_gun2 = "487540#";
-String blue_gun3 = "3#";
+String blue_gun2 = "465751#";
+String blue_gun3 = "489808#";
 String blue_gun4 = "4#";
 String blue_gun5 = "5#";
 
@@ -173,6 +173,8 @@ bool blue2_gun_flag = false;
 bool blue3_gun_flag = false;
 bool blue4_gun_flag = false;
 bool blue5_gun_flag = false;
+
+int last_gun_num = 0;
 
 unsigned long timer_game = 0;
 unsigned long timer_smoke = 0;
@@ -784,13 +786,13 @@ void lasertag_mode()
 
     mp3_set_serial(Serial1);
     mp3_set_volume(20);
-    mp3_play(3);
+    mp3_play(46);
 
     is_timer_active = true;
   }
 
   digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
-  if (Serial2.available()) 
+  if (Serial2.available() && is_game_over == false) 
   {
     string = "";
     delay(100);
@@ -806,12 +808,18 @@ void lasertag_mode()
   {
     mp3_play(11);
     counter_red_prev = counter_red;
+    delay(1000);
+    int track_number = random(41, 50);
+    mp3_play(track_number);
   }
 
   if(counter_green != counter_green_prev) //when counter red was changed - play a sound
   {
     mp3_play(12);
+    delay(1000);
     counter_green_prev = counter_green;
+    int track_number = random(41, 50);
+    mp3_play(track_number);
   }
 
   Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value - refresh display!
@@ -841,7 +849,7 @@ void lasertag_mode()
     }
   }
 
-  if(counter_red == 10 || counter_green == 10) //victory!!!
+  if((counter_red == 10 || counter_green == 10) && is_game_over == false) //victory!!!
   {
 
     is_disco = false;
@@ -850,9 +858,12 @@ void lasertag_mode()
 
     if(is_game_over == false)
     {
+      digitalWrite(timer_start, HIGH);
+      mp3_play(13);
+      delay(4000);
+      mp3_set_volume(25);
       mp3_play(5);
       delay(100);
-      digitalWrite(timer_start, HIGH);
       is_game_over = true;
     }
 
@@ -862,6 +873,9 @@ void lasertag_mode()
     digitalWrite(M_4_syrene2, LOW); //power off
     digitalWrite(T_1_smoke_machine, LOW);
     digitalWrite(T_2_disco_lamp, LOW);
+
+    digitalWrite(T_3_exit_door_led_projector, HIGH); //set a p4
+    Serial.println("Exit_projector on");
   }
 
 }
@@ -1066,67 +1080,69 @@ void rs485_recieve_lasertag_mode()
     string += inChar;
     if (inChar == '#')
     {
-      recieved_RF = string;
-
-      //Serial.println(recieved_RF.equals(recieved_RF_prev));
-
-      if(!(recieved_RF.equals(recieved_RF_prev))) // condition to pass the only one batch of code!
-      {
         Serial.println(string);
         //red gun's codes
-        if (string.equals(red_gun1))
+        if (string.equals(red_gun1) && last_gun_num != 1)
         {
           counter_red_gun +=1;
+          last_gun_num = 1;
         }
 
-        if (string.equals(red_gun2))
+        if (string.equals(red_gun2) && last_gun_num != 2)
         {
           counter_red_gun +=1;
+          last_gun_num = 2;
         }
 
-        if (string.equals(red_gun3))
+        if (string.equals(red_gun3) && last_gun_num != 3)
         {
           counter_red_gun +=1;
+          last_gun_num = 3;
         }
 
-        if (string.equals(red_gun4))
+        if (string.equals(red_gun4) && last_gun_num != 4)
         {
           counter_red_gun +=1;
+          last_gun_num = 4;
         }
 
-        if (string.equals(red_gun5))
+        if (string.equals(red_gun5) && last_gun_num != 5)
         {
           counter_red_gun +=1;
+          last_gun_num = 5;
         }
 
         //blue gun's codes
-        if (string.equals(blue_gun1))
+        if (string.equals(blue_gun1) && last_gun_num != 6)
         {
           counter_blue_gun +=1;
+          last_gun_num = 6;
         }
 
-        if (string.equals(blue_gun2))
+        if (string.equals(blue_gun2) && last_gun_num != 7)
         {
           counter_blue_gun +=1;
+          last_gun_num = 7;
         }
 
-        if (string.equals(blue_gun3))
+        if (string.equals(blue_gun3) && last_gun_num != 8)
         {
           counter_blue_gun +=1;
+          last_gun_num = 8;
         }
 
-        if (string.equals(blue_gun4))
+        if (string.equals(blue_gun4) && last_gun_num != 9)
         {
           counter_blue_gun +=1;
+          last_gun_num = 9;
         }
 
-        if (string.equals(blue_gun5))
+        if (string.equals(blue_gun5) && last_gun_num != 10)
         {
           counter_blue_gun +=1;
+          last_gun_num = 10;
         }
-        recieved_RF_prev = recieved_RF;
         string = "";
-      }
     }
   }
 }
