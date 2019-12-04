@@ -792,12 +792,15 @@ void lasertag_mode()
   }
 
   digitalWrite(rs485_direction_pin, LOW); //set a rs485 port to a recieve mode
-  if (Serial2.available() && is_game_over == false) 
+  if (Serial2.available())
   {
     string = "";
     delay(100);
-    rs485_recieve_lasertag_mode();
-    //rs485_test();
+    if(is_game_over == false)
+    {
+      rs485_recieve_lasertag_mode(); // is_game_over here is a little bit 'kostyl" because it had to be done quickly
+      //rs485_test();
+    }
   }
 
   //change a score on a display every X poins! and play a bell sound every time
