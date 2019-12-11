@@ -76,11 +76,12 @@ void showCode(unsigned long receivedCode, unsigned int period)
   delay(50);
   Serial.print(receivedCode);
   Serial.println("#"); // Выводим стоповый байт.
-  
+
   /*
 	//digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
    	//Print the received code.
     //Serial.print("Code: ");
+    
     recieved = receivedCode;
     if(recieved != recieved_prev)
     {
