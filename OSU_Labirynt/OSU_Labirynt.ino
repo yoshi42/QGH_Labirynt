@@ -125,15 +125,15 @@ String adm_key = "923640870#"; //admin key
 
 String red_gun1 = "525609#";
 String red_gun2 = "487540#";
-String red_gun3 = "03#";
-String red_gun4 = "04#";
-String red_gun5 = "05#";
-
+String red_gun3 = "354052#";
+String red_gun4 = "163945#";
+String red_gun5 = "529903#"; //2channel remote, ch A
+ 
 String blue_gun1 = "529822#";
 String blue_gun2 = "465751#";
 String blue_gun3 = "489808#";
-String blue_gun4 = "4#";
-String blue_gun5 = "5#";
+String blue_gun4 = "352756#";
+String blue_gun5 = "412453#"; //4channel remote, ch A
 
 String recieved_RF = "0";
 String recieved_RF_prev = "1";
@@ -795,7 +795,7 @@ void lasertag_mode()
   if (Serial2.available())
   {
     string = "";
-    delay(100);
+    delay(20);
     if(is_game_over == false)
     {
       rs485_recieve_lasertag_mode(); // is_game_over here is a little bit 'kostyl" because it had to be done quickly
@@ -809,14 +809,14 @@ void lasertag_mode()
 
   if(counter_red != counter_red_prev) //when counter red was changed - play a sound
   {
-    mp3_play(11);
+    mp3_play(11); //play bell son
     counter_red_prev = counter_red;
-    delay(1000);
-    int track_number = random(41, 50);
-    mp3_play(track_number);
+    delay(1000); //wait to song end (delay must be changed)
+    int track_number = random(41, 50); //
+    mp3_play(track_number); //play random track
   }
 
-  if(counter_green != counter_green_prev) //when counter red was changed - play a sound
+  if(counter_green != counter_green_prev) //when counter green was changed - play a sound
   {
     mp3_play(12);
     delay(1000);
@@ -834,7 +834,7 @@ void lasertag_mode()
     digitalWrite(timer_set_30, HIGH);
     digitalWrite(timer_start, HIGH);
 
-    mp3_play(13);
+    mp3_play(13); //play gong song
 
     digitalWrite(T_3_exit_door_led_projector, HIGH);
     digitalWrite(T_1_smoke_machine, LOW);
@@ -862,7 +862,7 @@ void lasertag_mode()
     if(is_game_over == false)
     {
       digitalWrite(timer_start, HIGH);
-      mp3_play(13);
+      mp3_play(13); //play gong song
       delay(4000);
       mp3_set_volume(25);
       mp3_play(5);
