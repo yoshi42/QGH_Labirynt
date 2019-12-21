@@ -105,6 +105,13 @@ String red7 = "2203065883#";
 String red8 = "294147356#";
 String red9 = "324687645#";
 String red10 = "2455523098#";
+String red11 = "883409289#";
+String red12 = "538930959#";
+String red13 = "2513136143#";
+String red14 = "3724562959#";
+String red15 = "288647695#";
+String red16 = "1436642063#";
+String red17 = "4087705359#";
 
 String green1 = "2455335450#";
 String green2 = "2455522586#";
@@ -116,6 +123,13 @@ String green7 = "1405263661#";
 String green8 = "2734537269#";
 String green9 = "2202833435#";
 String green10 = "2202829595#";
+String green11 = "123625487#";
+String green12 = "825978639#";
+String green13 = "212152351#";
+String green14 = "2868789023#";
+String green15 = "3406979343#";
+String green16 = "3440721951#";
+String green17 = "222#";
 
 String adm_key = "923640870#"; //admin key
 
@@ -133,7 +147,7 @@ String blue_gun1 = "529822#";
 String blue_gun2 = "465751#";
 String blue_gun3 = "489808#";
 String blue_gun4 = "352756#";
-String blue_gun5 = "412453#"; //4channel remote, ch A
+String blue_gun5 = "412453#";
 
 String recieved_RF = "0";
 String recieved_RF_prev = "1";
@@ -149,6 +163,13 @@ bool red7_flag = false;
 bool red8_flag = false;
 bool red9_flag = false;
 bool red10_flag = false;
+bool red11_flag = false;
+bool red12_flag = false;
+bool red13_flag = false;
+bool red14_flag = false;
+bool red15_flag = false;
+bool red16_flag = false;
+bool red17_flag = false;
 
 bool green1_flag = false;
 bool green2_flag = false;
@@ -160,6 +181,13 @@ bool green7_flag = false;
 bool green8_flag = false;
 bool green9_flag = false;
 bool green10_flag = false;
+bool green11_flag = false;
+bool green12_flag = false;
+bool green13_flag = false;
+bool green14_flag = false;
+bool green15_flag = false;
+bool green16_flag = false;
+bool green17_flag = false;
 
 //gun flags
 bool red1_gun_flag = false;
@@ -648,7 +676,7 @@ void artefact_mode()
 
     mp3_set_serial(Serial1);
     mp3_set_volume(20);
-    mp3_play(3);
+    mp3_play(30);
 
     is_timer_active = true;
   }
@@ -661,72 +689,107 @@ void artefact_mode()
     rs485_recieve_artefact_mode();
   }
 
-  Num1_red_Write(counter_red); // send to a Num1_red_Write function a counter_red value
-  Num2_green_Write(counter_green);
+  if((counter_red != counter_red_prev) && counter_red != 10) //when counter red was changed - play a sound
+  {
+    mp3_play(11); //play bell song
+    counter_red_prev = counter_red;
+    delay(1000); //wait to song end (delay must be changed)
+    int track_number = random(30, 40); //
+    mp3_play(track_number); //play random track
+  }
 
-  if(millis()-timer_game == 1500000) //25 min(1500s) has left
+  if((counter_green != counter_green_prev) && counter_green != 10) //when counter green was changed - play a sound
+  {
+    mp3_play(12);
+    delay(1000);
+    counter_green_prev = counter_green;
+    int track_number = random(30, 40);
+    mp3_play(track_number);
+  }
+
+  Num1_red_Write(counter_green);
+  Num2_green_Write(counter_red);
+
+  if(millis()-timer_game >= 1500000) //25 min(1500s) has left
   {
     digitalWrite(M_3_syrene1, HIGH);
-    if(millis()-timer_game == 1510000) //+10sec
+    digitalWrite(M_4_syrene2, HIGH);
+    if(millis()-timer_game >= 1510000) //+10sec
     {
       digitalWrite(M_3_syrene1, LOW);
+      digitalWrite(M_4_syrene2, LOW);
     }
   }
 
-  if(millis()-timer_game == 1560000) //26 min(1560s) has left
+  if(millis()-timer_game >= 1560000) //26 min(1560s) has left
   {
     digitalWrite(M_3_syrene1, HIGH);
-    if(millis()-timer_game == 1570000) //+10sec
+    digitalWrite(M_4_syrene2, HIGH);
+    if(millis()-timer_game >= 1570000) //+10sec
     {
       digitalWrite(M_3_syrene1, LOW);
+      digitalWrite(M_4_syrene2, LOW);
     }
   }
 
-  if(millis()-timer_game == 1620000) //27 min(1620s) has left
+  if(millis()-timer_game >= 1620000) //27 min(1620s) has left
   {
     digitalWrite(M_3_syrene1, HIGH);
-    if(millis()-timer_game == 1630000) //+10sec
+    digitalWrite(M_4_syrene2, HIGH);
+    if(millis()-timer_game >= 1630000) //+10sec
     {
       digitalWrite(M_3_syrene1, LOW);
+      digitalWrite(M_4_syrene2, LOW);
     }
   }
 
-  if(millis()-timer_game == 1680000) //28 min(1680s) has left
+  if(millis()-timer_game >= 1680000) //28 min(1680s) has left
   {
     digitalWrite(M_3_syrene1, HIGH);
-    if(millis()-timer_game == 1690000) //+10sec
+    digitalWrite(M_4_syrene2, HIGH);
+    if(millis()-timer_game >= 1690000) //+10sec
     {
       digitalWrite(M_3_syrene1, LOW);
+      digitalWrite(M_4_syrene2, LOW);
     }
   }
 
-  if(millis()-timer_game == 1740000) //29 min(1740s) has left
+  if(millis()-timer_game >= 1740000) //29 min(1740s) has left
   {
     digitalWrite(M_3_syrene1, HIGH);
-    if(millis()-timer_game == 1750000) //+10sec
+    digitalWrite(M_4_syrene2, HIGH);
+    if(millis()-timer_game >= 1750000) //+10sec
     {
       digitalWrite(M_3_syrene1, LOW);
+      digitalWrite(M_4_syrene2, LOW);
     }
   }
 
-  if(millis()-timer_game == 1800000) //30 min(1800s) has left
+  if(millis()-timer_game >= 1800000) //30 min(1800s) has left
   {
-    digitalWrite(timer_set_30, HIGH);
-    digitalWrite(timer_start, HIGH);
-
-    mp3_play(13);
-
-    digitalWrite(T_3_exit_door_led_projector, HIGH);
-    digitalWrite(T_1_smoke_machine, LOW);
-    digitalWrite(T_2_disco_lamp, LOW);
-
-    digitalWrite(M_3_syrene1, HIGH);
-    if(millis()-timer_game == 1810000) //+10sec
+    if(is_game_over == false)
     {
-      digitalWrite(M_3_syrene1, LOW);
+      digitalWrite(timer_set_30, HIGH);
+      digitalWrite(timer_start, HIGH);
+
+      mp3_play(13);
+
+      digitalWrite(T_3_exit_door_led_projector, HIGH);
+      digitalWrite(T_1_smoke_machine, LOW);
+      digitalWrite(T_2_disco_lamp, LOW);
+
+      digitalWrite(M_3_syrene1, HIGH);
+      digitalWrite(M_4_syrene2, HIGH);
+      is_game_over = true;
     }
 
-    if(millis()-timer_game == 1980000) //33 min has left
+    if(millis()-timer_game >= 1810000) //+10sec
+    {
+      digitalWrite(M_3_syrene1, LOW);
+      digitalWrite(M_4_syrene2, LOW);
+    }
+
+    if(millis()-timer_game >= 1980000) //33 min has left
     {
       digitalWrite(T_3_exit_door_led_projector, LOW);
     }
@@ -796,7 +859,7 @@ void lasertag_mode()
   {
     string = "";
     delay(20);
-    if(is_game_over == false)
+    if(is_game_over == false) //dont recieve anything while game is over
     {
       rs485_recieve_lasertag_mode(); // is_game_over here is a little bit 'kostyl" because it had to be done quickly
       //rs485_test();
@@ -829,24 +892,33 @@ void lasertag_mode()
   Num2_green_Write(counter_green);
 
 
-  if(millis()-timer_game == 900000) //15 min(900s) has left
+  if(millis()-timer_game >= 900000) //15 min(900s) has left
   {
-    digitalWrite(timer_set_30, HIGH);
-    digitalWrite(timer_start, HIGH);
+    if(is_game_over == false)
+    {
 
-    mp3_play(13); //play gong song
+      digitalWrite(timer_set_30, HIGH);
+      digitalWrite(timer_start, HIGH);
+      mp3_play(13); //play gong song
+      delay(4000);
+      mp3_set_volume(25);
+      mp3_play(5);
+      delay(100);
 
-    digitalWrite(T_3_exit_door_led_projector, HIGH);
-    digitalWrite(T_1_smoke_machine, LOW);
-    digitalWrite(T_2_disco_lamp, LOW);
+      digitalWrite(T_3_exit_door_led_projector, HIGH);
+      digitalWrite(T_1_smoke_machine, LOW);
+      digitalWrite(T_2_disco_lamp, LOW);
 
-    digitalWrite(M_3_syrene1, HIGH);
-    if(millis()-timer_game == 910000) //+10sec
+      digitalWrite(M_3_syrene1, HIGH);
+      is_game_over = true;
+    }
+
+    if(millis()-timer_game >= 910000) //+10sec
     {
       digitalWrite(M_3_syrene1, LOW);
     }
 
-    if(millis()-timer_game == 1080000) //18 min has left
+    if(millis()-timer_game >= 1080000) //18 min has left
     {
       digitalWrite(T_3_exit_door_led_projector, LOW);
     }
@@ -997,6 +1069,55 @@ void rs485_recieve_artefact_mode()
         mp3_play(11);
       }
 
+      if (red11_flag == false && string.equals(red11))
+      {
+        red11_flag = true;
+        counter_red +=1;
+        mp3_play(11);
+      }
+
+      if (red12_flag == false && string.equals(red12))
+      {
+        red12_flag = true;
+        counter_red +=1;
+        mp3_play(11);
+      }
+
+      if (red13_flag == false && string.equals(red13))
+      {
+        red13_flag = true;
+        counter_red +=1;
+        mp3_play(11);
+      }
+
+      if (red14_flag == false && string.equals(red14))
+      {
+        red14_flag = true;
+        counter_red +=1;
+        mp3_play(11);
+      }
+
+      if (red15_flag == false && string.equals(red15))
+      {
+        red16_flag = true;
+        counter_red +=1;
+        mp3_play(11);
+      }
+
+      if (red16_flag == false && string.equals(red16))
+      {
+        red16_flag = true;
+        counter_red +=1;
+        mp3_play(11);
+      }
+
+      if (red17_flag == false && string.equals(red17))
+      {
+        red17_flag = true;
+        counter_red +=1;
+        mp3_play(11);
+      }
+
       //green cards uid check
       if (green1_flag == false && string.equals(green1))
       {
@@ -1064,6 +1185,55 @@ void rs485_recieve_artefact_mode()
       if (green10_flag == false && string.equals(green10))
       {
         green10_flag = true;
+        counter_green +=1;
+        mp3_play(12);
+      }
+
+      if (green11_flag == false && string.equals(green11))
+      {
+        green11_flag = true;
+        counter_green +=1;
+        mp3_play(12);
+      }
+
+      if (green12_flag == false && string.equals(green12))
+      {
+        green12_flag = true;
+        counter_green +=1;
+        mp3_play(12);
+      }
+
+      if (green13_flag == false && string.equals(green13))
+      {
+        green13_flag = true;
+        counter_green +=1;
+        mp3_play(12);
+      }
+
+      if (green14_flag == false && string.equals(green14))
+      {
+        green14_flag = true;
+        counter_green +=1;
+        mp3_play(12);
+      }
+
+      if (green15_flag == false && string.equals(green15))
+      {
+        green15_flag = true;
+        counter_green +=1;
+        mp3_play(12);
+      }
+
+      if (green16_flag == false && string.equals(green16))
+      {
+        green16_flag = true;
+        counter_green +=1;
+        mp3_play(12);
+      }
+
+      if (green17_flag == false && string.equals(green17))
+      {
+        green17_flag = true;
         counter_green +=1;
         mp3_play(12);
       }
