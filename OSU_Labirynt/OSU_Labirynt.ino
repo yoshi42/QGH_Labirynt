@@ -133,17 +133,13 @@ String green17 = "222#";
 
 String adm_key = "923640870#"; //admin key
 
-
-//it is needed to invert codes: red gun codes to green and green to red
-//red team codes gives point to green and conversely
-
 String red_gun1 = "525609#";
 String red_gun2 = "487540#";
 String red_gun3 = "354052#";
 String red_gun4 = "163945#";
-String red_gun5 = "529903#"; //2channel remote, ch A
+String red_gun5 = "529822#";  
  
-String blue_gun1 = "529822#";
+String blue_gun1 = "529903#";
 String blue_gun2 = "465751#";
 String blue_gun3 = "489808#";
 String blue_gun4 = "352756#";
