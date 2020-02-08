@@ -137,13 +137,15 @@ String red_gun1 = "525609#";
 String red_gun2 = "487540#";
 String red_gun3 = "354052#";
 String red_gun4 = "163945#";
-String red_gun5 = "529822#";  
+String red_gun5 = "529822#";
+String red_gun6 = "123456#";
  
 String blue_gun1 = "529903#";
 String blue_gun2 = "465751#";
 String blue_gun3 = "489808#";
 String blue_gun4 = "352756#";
 String blue_gun5 = "412453#";
+String blue_gun6 = "97606#";
 
 String recieved_RF = "0";
 String recieved_RF_prev = "1";
@@ -1281,6 +1283,12 @@ void rs485_recieve_lasertag_mode()
           last_gun_num = 5;
         }
 
+        if (string.equals(red_gun6) && last_gun_num != 51)
+        {
+          counter_red_gun +=1;
+          last_gun_num = 51;
+        }
+
         //blue gun's codes
         if (string.equals(blue_gun1) && last_gun_num != 6)
         {
@@ -1310,6 +1318,12 @@ void rs485_recieve_lasertag_mode()
         {
           counter_blue_gun +=1;
           last_gun_num = 10;
+        }
+
+        if (string.equals(blue_gun6) && last_gun_num != 11)
+        {
+          counter_blue_gun +=1;
+          last_gun_num = 11;
         }
         string = "";
     }
