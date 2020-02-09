@@ -133,19 +133,19 @@ String green17 = "222#";
 
 String adm_key = "923640870#"; //admin key
 
-String red_gun1 = "525609#";
-String red_gun2 = "487540#";
-String red_gun3 = "354052#";
-String red_gun4 = "163945#";
-String red_gun5 = "529822#";
-String red_gun6 = "123456#";
- 
-String blue_gun1 = "529903#";
-String blue_gun2 = "465751#";
-String blue_gun3 = "489808#";
-String blue_gun4 = "352756#";
-String blue_gun5 = "412453#";
-String blue_gun6 = "97606#";
+String red_gun1 = "529903#";//1
+String red_gun2 = "487540#";//2
+String red_gun3 = "354052#";//3
+String red_gun4 = "163945#";//4
+String red_gun5 = "529822#";//5
+String red_gun6 = "12345#";
+ //blue pistols - plus 1score to red team
+String blue_gun1 = "525618#"; //1
+String blue_gun2 = "465751#";//2 
+String blue_gun3 = "489808#";//3
+String blue_gun4 = "352756#";//4
+String blue_gun5 = "412453#";//5
+String blue_gun6 = "97606#";//new 6
 
 String recieved_RF = "0";
 String recieved_RF_prev = "1";
