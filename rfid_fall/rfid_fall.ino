@@ -12,6 +12,9 @@
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 unsigned long uidDec, uidDecTemp;  // для храниения номера метки в десятичном формате
 
+unsigned long recieved = 0;
+unsigned long recieved_prev = 0;
+
 SoftwareSerial RS485Serial(SSerialRX, SSerialTX); // RX, TX
 
 void setup() {
@@ -33,7 +36,9 @@ void setup() {
 
   digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
   //RS485Serial.println("Waiting for card..."); // Выводим UID метки в консоль.
-  Serial.println("Waiting for card...");
+  Serial.println("RS485 Waiting for card...");
+  delay(50);
+
 }
 void loop() 
 {
@@ -67,12 +72,28 @@ void loop()
 
 void showCode(unsigned long receivedCode, unsigned int period) 
 {	
+  digitalWrite(SSerialTxControl, HIGH);
+  delay(50);
+  Serial.print(receivedCode);
+  Serial.println("#"); // Выводим стоповый байт.
+
+  /*
 	//digitalWrite(SSerialTxControl, HIGH); // переводим устройство в режим передатчика
    	//Print the received code.
-    Serial.print("Code: ");
-    Serial.print(receivedCode);
-    //Serial.println("#"); // Выводим стоповый байт.
-    Serial.print(", period duration: ");
-    Serial.print(period);
-    Serial.println("us.");
+    //Serial.print("Code: ");
+    
+    recieved = receivedCode;
+    if(recieved != recieved_prev)
+    {
+      digitalWrite(SSerialTxControl, HIGH);
+      delay(50);
+      Serial.print(receivedCode);
+      Serial.println("#"); // Выводим стоповый байт.
+      ////Serial.print(", period duration: ");
+      ////Serial.print(period);
+      ////Serial.println("us.");
+      recieved_prev = recieved;
+    }
+  */
+
 }
