@@ -143,9 +143,9 @@ String red_gun6 = "12345#";
 String blue_gun1 = "525618#"; //1
 String blue_gun2 = "465751#";//2 
 String blue_gun3 = "489808#";//3
-String blue_gun4 = "352756#";//4
+String blue_gun4 = "352756#";//4b
 String blue_gun5 = "412453#";//5
-String blue_gun6 = "97606#";//new 6
+String blue_gun6 = "117289#";//new 6
 
 String recieved_RF = "0";
 String recieved_RF_prev = "1";
