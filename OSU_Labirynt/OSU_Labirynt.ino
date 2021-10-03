@@ -95,42 +95,55 @@ int counter_gun_divider = 1; //variable to divide points to fit in 1 digit score
 String string; //variable to store information recieved form serial to compare card uids
 
 //Artefact mode card uids for 
-String red1 = "300311836#";//+
-String red2 = "55922973#";//+
-String red3 = "2978344986#";//+
-String red4 = "2455429146#";//+
-String red5 = "1917039386#";//+
-String red6 = "2994181685#";//+
-String red7 = "2203065883#";//+
-String red8 = "294147356#";//+
-String red9 = "324687645#";//+
-String red10 = "2455523098#";
-String red11 = "883409289#";//+
-String red12 = "538930959#";//+
-String red13 = "2513136143#";//+
-String red14 = "3724562959#";//+
-String red15 = "288647695#";//+
-String red16 = "1436642063#";//+
-String red17 = "4087705359#";//+
+String red1 = "503398431#";//ok
+String red2 = "2358333711#";//ok
+String red3 = "2978344986#";//ok
+String red4 = "2455429146#";//ok
+String red5 = "1917039386#";//ok
+String red6 = "2994181685#";//ok
+String red7 = "2203065883#";//ok
+String red8 = "294147356#";//ok
+String red9 = "324687645#";//ok
+String red10 = "2420007695#";//ok
+String red11 = "1239830799#";//ok
+String red12 = "538930959#";//ok
+String red13 = "2513136143#";//ok
+String red14 = "3724562959#";//ok
+String red15 = "2868789023#";//ok
+String red16 = "4087705359#";//ok
+String red17 = "red17#";
+String red18 = "red18#";
+String red19 = "red19#";
+String red20 = "red20#";
+String red21 = "red21#";
+String red22 = "red22#";
+String red23 = "red23#";
+String red24 = "red24#";
 
-String green1 = "2455335450#";//+
-String green2 = "912732447#"; //old - 2455522586
-String green3 = "2434805530#";//+
-String green4 = "325257757#";//+
-String green5 = "2455109914#";//+
-String green6 = "2989438517#";//+
-String green7 = "1405263661#";//+
-String green8 = "2734537269#";//+
-String green9 = "2202833435#";//+
-
-String green10 = "2202829595#";//+
-String green11 = "2761773327#"; //old - 123625487#
-String green12 = "2519228431#"; //old - 825978639
-String green13 = "2904576527#"; //old - 212152351
-String green14 = "2194755855#"; //old - 2868789023
-String green15 = "2197897247#"; //old - 3406979343
-String green16 = "380850703#"; //old - 3440721951
-String green17 = "222#";
+String green1 = "2455335450#";//ok
+String green2 = "2455522586#"; //ok
+String green3 = "2434805530#";//ok
+String green4 = "325257757#";//ok
+String green5 = "3951120911#";//ok
+String green6 = "2989438517#";//ok
+String green7 = "2976338447#";//ok
+String green8 = "123625487#";//ok
+String green9 = "2202833435#";//ok
+String green10 = "3406979343#";//ok
+String green11 = "2761773327#"; //ok
+String green12 = "2519228431#"; //ok
+String green13 = "2904576527#"; //ok
+String green14 = "212152351#"; //ok
+String green15 = "825978639#"; //ok
+String green16 = "380850703#"; //ok
+String green17 = "3440721951#";//ok
+String green18 = "green18#";
+String green19 = "green19#";
+String green20 = "green20#";
+String green21 = "green21#";
+String green22 = "green22#";
+String green23 = "green23#";
+String green24 = "green24#";
 
 String adm_key = "923640870#"; //admin key
 
@@ -169,6 +182,13 @@ bool red14_flag = false;
 bool red15_flag = false;
 bool red16_flag = false;
 bool red17_flag = false;
+bool red18_flag = false;
+bool red19_flag = false;
+bool red20_flag = false;
+bool red21_flag = false;
+bool red22_flag = false;
+bool red23_flag = false;
+bool red24_flag = false;
 
 bool green1_flag = false;
 bool green2_flag = false;
@@ -187,6 +207,13 @@ bool green14_flag = false;
 bool green15_flag = false;
 bool green16_flag = false;
 bool green17_flag = false;
+bool green18_flag = false;
+bool green19_flag = false;
+bool green20_flag = false;
+bool green21_flag = false;
+bool green22_flag = false;
+bool green23_flag = false;
+bool green24_flag = false;
 
 //gun flags
 bool red1_gun_flag = false;
@@ -419,6 +446,20 @@ void loop()
     red8_flag = false;
     red9_flag = false;
     red10_flag = false;
+    red11_flag = false;
+    red12_flag = false;
+    red13_flag = false;
+    red14_flag = false;
+    red15_flag = false;
+    red16_flag = false;
+    red17_flag = false;
+    red18_flag = false;
+    red19_flag = false;
+    red20_flag = false;
+    red21_flag = false;
+    red22_flag = false;
+    red23_flag = false;
+    red24_flag = false;
 
     green1_flag = false;
     green2_flag = false;
@@ -430,6 +471,20 @@ void loop()
     green8_flag = false;
     green9_flag = false;
     green10_flag = false;
+    green11_flag = false;
+    green12_flag = false;
+    green13_flag = false;
+    green14_flag = false;
+    green15_flag = false;
+    green16_flag = false;
+    green17_flag = false;
+    green18_flag = false;
+    green19_flag = false;
+    green20_flag = false;
+    green21_flag = false;
+    green22_flag = false;
+    green23_flag = false;
+    green24_flag = false;
 
     red1_gun_flag = false;
     red2_gun_flag = false;
@@ -998,244 +1053,56 @@ void rs485_recieve_artefact_mode()
     {
       //red cards uid check
       Serial.println(string);
-      if (red1_flag == false && string.equals(red1))
-      {
-        red1_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
 
-      if (red2_flag == false && string.equals(red2))
-      {
-        red2_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
+      if (red1_flag == false && string.equals(red1)){red1_flag = true;counter_red +=1;mp3_play(11);}
+      if (red2_flag == false && string.equals(red2)){red2_flag = true;counter_red +=1;mp3_play(11);}
+      if (red3_flag == false && string.equals(red3)){red3_flag = true;counter_red +=1;mp3_play(11);}
+      if (red4_flag == false && string.equals(red4)){red4_flag = true;counter_red +=1;mp3_play(11);}
+      if (red5_flag == false && string.equals(red5)){red5_flag = true;counter_red +=1;mp3_play(11);}
+      if (red6_flag == false && string.equals(red6)){red6_flag = true;counter_red +=1;mp3_play(11);}
+      if (red7_flag == false && string.equals(red7)){red7_flag = true;counter_red +=1;mp3_play(11);}
+      if (red8_flag == false && string.equals(red8)){red8_flag = true;counter_red +=1;mp3_play(11);}
+      if (red9_flag == false && string.equals(red9)){red9_flag = true;counter_red +=1;mp3_play(11);}
+      if (red10_flag == false && string.equals(red10)){red10_flag = true;counter_red +=1;mp3_play(11);}
+      if (red11_flag == false && string.equals(red11)){red11_flag = true;counter_red +=1;mp3_play(11);}
+      if (red12_flag == false && string.equals(red12)){red12_flag = true;counter_red +=1;mp3_play(11);}
+      if (red13_flag == false && string.equals(red13)){red13_flag = true;counter_red +=1;mp3_play(11);}
+      if (red14_flag == false && string.equals(red14)){red14_flag = true;counter_red +=1;mp3_play(11);}
+      if (red15_flag == false && string.equals(red15)){red15_flag = true;counter_red +=1;mp3_play(11);}
+      if (red16_flag == false && string.equals(red16)){red16_flag = true;counter_red +=1;mp3_play(11);}
+      if (red17_flag == false && string.equals(red17)){red17_flag = true;counter_red +=1;mp3_play(11);}
+      if (red18_flag == false && string.equals(red18)){red18_flag = true;counter_red +=1;mp3_play(11);}
+      if (red19_flag == false && string.equals(red19)){red19_flag = true;counter_red +=1;mp3_play(11);}
+      if (red20_flag == false && string.equals(red20)){red20_flag = true;counter_red +=1;mp3_play(11);}
+      if (red21_flag == false && string.equals(red21)){red21_flag = true;counter_red +=1;mp3_play(11);}
+      if (red22_flag == false && string.equals(red22)){red22_flag = true;counter_red +=1;mp3_play(11);}
+      if (red23_flag == false && string.equals(red23)){red23_flag = true;counter_red +=1;mp3_play(11);}
+      if (red24_flag == false && string.equals(red24)){red24_flag = true;counter_red +=1;mp3_play(11);}
 
-      if (red3_flag == false && string.equals(red3))
-      {
-        red3_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red4_flag == false && string.equals(red4))
-      {
-        red4_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red5_flag == false && string.equals(red5))
-      {
-        red5_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red6_flag == false && string.equals(red6))
-      {
-        red6_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red7_flag == false && string.equals(red7))
-      {
-        red7_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red8_flag == false && string.equals(red8))
-      {
-        red8_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red9_flag == false && string.equals(red9))
-      {
-        red9_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red10_flag == false && string.equals(red10))
-      {
-        red10_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red11_flag == false && string.equals(red11))
-      {
-        red11_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red12_flag == false && string.equals(red12))
-      {
-        red12_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red13_flag == false && string.equals(red13))
-      {
-        red13_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red14_flag == false && string.equals(red14))
-      {
-        red14_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red15_flag == false && string.equals(red15))
-      {
-        red16_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red16_flag == false && string.equals(red16))
-      {
-        red16_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      if (red17_flag == false && string.equals(red17))
-      {
-        red17_flag = true;
-        counter_red +=1;
-        mp3_play(11);
-      }
-
-      //green cards uid check
-      if (green1_flag == false && string.equals(green1))
-      {
-        green1_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green2_flag == false && string.equals(green2))
-      {
-        green2_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green3_flag == false && string.equals(green3))
-      {
-        green3_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green4_flag == false && string.equals(green4))
-      {
-        green4_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green5_flag == false && string.equals(green5))
-      {
-        green5_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green6_flag == false && string.equals(green6))
-      {
-        green6_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green7_flag == false && string.equals(green7))
-      {
-        green7_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green8_flag == false && string.equals(green8))
-      {
-        green8_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green9_flag == false && string.equals(green9))
-      {
-        green9_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green10_flag == false && string.equals(green10))
-      {
-        green10_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green11_flag == false && string.equals(green11))
-      {
-        green11_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green12_flag == false && string.equals(green12))
-      {
-        green12_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green13_flag == false && string.equals(green13))
-      {
-        green13_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green14_flag == false && string.equals(green14))
-      {
-        green14_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green15_flag == false && string.equals(green15))
-      {
-        green15_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green16_flag == false && string.equals(green16))
-      {
-        green16_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
-
-      if (green17_flag == false && string.equals(green17))
-      {
-        green17_flag = true;
-        counter_green +=1;
-        mp3_play(12);
-      }
+      if (green1_flag == false && string.equals(green1)){green1_flag = true;counter_green +=1;mp3_play(12);}
+      if (green2_flag == false && string.equals(green2)){green2_flag = true;counter_green +=1;mp3_play(12);}
+      if (green3_flag == false && string.equals(green3)){green3_flag = true;counter_green +=1;mp3_play(12);}
+      if (green4_flag == false && string.equals(green4)){green4_flag = true;counter_green +=1;mp3_play(12);}
+      if (green5_flag == false && string.equals(green5)){green5_flag = true;counter_green +=1;mp3_play(12);}
+      if (green6_flag == false && string.equals(green6)){green6_flag = true;counter_green +=1;mp3_play(12);}
+      if (green7_flag == false && string.equals(green7)){green7_flag = true;counter_green +=1;mp3_play(12);}
+      if (green8_flag == false && string.equals(green8)){green8_flag = true;counter_green +=1;mp3_play(12);}
+      if (green9_flag == false && string.equals(green9)){green9_flag = true;counter_green +=1;mp3_play(12);}
+      if (green10_flag == false && string.equals(green10)){green10_flag = true;counter_green +=1;mp3_play(12);}
+      if (green11_flag == false && string.equals(green11)){green11_flag = true;counter_green +=1;mp3_play(12);}
+      if (green12_flag == false && string.equals(green12)){green12_flag = true;counter_green +=1;mp3_play(12);}
+      if (green13_flag == false && string.equals(green13)){green13_flag = true;counter_green +=1;mp3_play(12);}
+      if (green14_flag == false && string.equals(green14)){green14_flag = true;counter_green +=1;mp3_play(12);}
+      if (green15_flag == false && string.equals(green15)){green15_flag = true;counter_green +=1;mp3_play(12);}
+      if (green16_flag == false && string.equals(green16)){green16_flag = true;counter_green +=1;mp3_play(12);}
+      if (green17_flag == false && string.equals(green17)){green17_flag = true;counter_green +=1;mp3_play(12);}
+      if (green18_flag == false && string.equals(green18)){green18_flag = true;counter_green +=1;mp3_play(12);}
+      if (green19_flag == false && string.equals(green19)){green19_flag = true;counter_green +=1;mp3_play(12);}
+      if (green20_flag == false && string.equals(green20)){green20_flag = true;counter_green +=1;mp3_play(12);}
+      if (green21_flag == false && string.equals(green21)){green21_flag = true;counter_green +=1;mp3_play(12);}
+      if (green22_flag == false && string.equals(green22)){green22_flag = true;counter_green +=1;mp3_play(12);}
+      if (green23_flag == false && string.equals(green23)){green23_flag = true;counter_green +=1;mp3_play(12);}
+      if (green24_flag == false && string.equals(green24)){green24_flag = true;counter_green +=1;mp3_play(12);}
 
     string = "";
     }
